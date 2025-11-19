@@ -1,4 +1,6 @@
+// Copyright message
 #include <iostream>
+
 using namespace std;
 
 template <typename T>
@@ -92,28 +94,25 @@ class myArray {
 
     T& getElement(int index) {
         if (index < 0) {
-            throw out_of_range("Error: getting an element failed due to invalid index.");
+            throw out_of_range("Error: invalid index.");
         }
         return data[index];
     }
 
     void remove(int index) {
-
         if (index < 0 || index >= size) {
-            throw out_of_range("Error: deleting an element failed due to invalid index.");
+            throw out_of_range("Error: invalid index.");
         }
 
         for (int i = index; i < size - 1; ++i) {
             data[i] = data[i + 1];
         }
-        
         size--;
     }
 
     void swapElements(int index, T value) {
-
         if (index < 0 || index >= size) {
-            throw out_of_range("Error: swapping an element failed due to invalid index.");
+            throw out_of_range("Error: invalid index.");
         }
 
         data[index] = value;
