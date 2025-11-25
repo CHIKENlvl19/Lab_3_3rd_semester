@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS= -std=c++17 -Wall -Wextra -O0 --coverage
+CXXFLAGS= -std=c++20 -Wall -Wextra -O2 --coverage
 LDFLAGS= --coverage -lgtest -lgtest_main -pthread
 
 SRC_DIR=src
@@ -36,6 +36,7 @@ coverage: clean all run
 	lcov --remove coverage/coverage.info \
     "/usr/*" \
     "*/googletest/*" \
+	"*/test_*" \
     -o coverage/coverage_clean.info \
     --ignore-errors inconsistent \
     --ignore-errors mismatch \

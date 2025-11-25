@@ -1,86 +1,190 @@
 // Copyright message
 #include <gtest/gtest.h>
-#include <stdexcept>
+#include <sstream>
+#include <string>
+#include <algorithm>
+#include <iostream>
 #include "../include/myStack.hpp"
 
+
+// вспомогающий метод для тестирования вывода cout
+std::string capturePrint(const Stack<int>& st) {
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+    st.print();
+    std::cout.rdbuf(old);
+    return buffer.str();
+}
+
+// тесты базовых операций
+
+TEST(StackTest, NewStackIsEmpty) {
+    Stack<int> st;
+    EXPECT_EQ(st.getSize(), 0);
+    EXPECT_THROW(st.peek(), std::underflow_error);
+}
+
 TEST(StackTest, PushIncreasesSize) {
-    Stack<int> s;
-    s.push(10);
-    s.push(20);
-    EXPECT_EQ(s.getSize(), 2);
+    Stack<int> st;
+    st.push(10);
+    EXPECT_EQ(st.getSize(), 1);
+    st.push(20);
+    EXPECT_EQ(st.getSize(), 2);
 }
 
 TEST(StackTest, PopDecreasesSize) {
-    Stack<int> s;
-    s.push(1);
-    s.push(2);
-    s.pop();
-    EXPECT_EQ(s.getSize(), 1);
+    Stack<int> st;
+    st.push(1);
+    st.push(2);
+    st.pop();
+    EXPECT_EQ(st.getSize(), 1);
 }
 
 TEST(StackTest, PopOnEmptyThrows) {
-    Stack<int> s;
-    EXPECT_THROW(s.pop(), std::underflow_error);
+    Stack<int> st;
+    EXPECT_THROW(st.pop(), std::underflow_error);
 }
 
 TEST(StackTest, PeekReturnsTop) {
-    Stack<int> s;
-    s.push(5);
-    s.push(9);
-    EXPECT_EQ(s.peek(), 9);
+    Stack<int> st;
+    st.push(5);
+    st.push(10);
+    EXPECT_EQ(st.peek(), 10);
 }
 
 TEST(StackTest, PeekOnEmptyThrows) {
-    Stack<int> s;
-    EXPECT_THROW(s.peek(), std::underflow_error);
+    Stack<int> st;
+    EXPECT_THROW(st.peek(), std::underflow_error);
 }
 
-TEST(StackTest, CopyConstructorWorks) {
-    Stack<int> s;
-    s.push(1);
-    s.push(2);
-    s.push(3);
+// тесты семантики копирования
 
-    Stack<int> c(s);
-    EXPECT_EQ(c.getSize(), s.getSize());
-    EXPECT_EQ(c.peek(), s.peek());
+TEST(StackTest, CopyConstructorWorks) {
+    Stack<int> st;
+    st.push(1);
+    st.push(2);
+
+    Stack<int> copy(st);
+
+    EXPECT_EQ(copy.getSize(), 2);
+    EXPECT_EQ(copy.peek(), 2);
 }
 
 TEST(StackTest, AssignmentOperatorWorks) {
-    Stack<int> s1;
-    s1.push(1);
-    s1.push(2);
+    Stack<int> st;
+    st.push(7);
+    st.push(9);
 
-    Stack<int> s2;
-    s2.push(9);
+    Stack<int> st2;
+    st2 = st;
 
-    s2 = s1;
-    EXPECT_EQ(s2.getSize(), 2);
-    EXPECT_EQ(s2.peek(), 2);
+    EXPECT_EQ(st2.getSize(), 2);
+    EXPECT_EQ(st2.peek(), 9);
+}
+
+TEST(StackTest, SelfAssignmentDoesNotBreak) {
+    Stack<int> st;
+    st.push(1);
+    st = st;   // self-assignment
+
+    EXPECT_EQ(st.getSize(), 1);
+    EXPECT_EQ(st.peek(), 1);
 }
 
 TEST(StackTest, DeepCopyCheck) {
-    Stack<int> s1;
-    s1.push(1);
-    s1.push(2);
+    Stack<int> st;
+    st.push(1);
+    st.push(2);
 
-    Stack<int> s2(s1);
-    s1.pop();
+    Stack<int> copy(st);
+    copy.pop();
 
-    EXPECT_EQ(s2.getSize(), 2);
-    EXPECT_EQ(s2.peek(), 2);
+    EXPECT_NE(copy.getSize(), st.getSize());
+    EXPECT_EQ(st.getSize(), 2);
 }
+
+// тесты границ (пределов)
 
 TEST(StackTest, MaxStackOverflow) {
-    Stack<int> s;
-    for (int i = 0; i < MAX_STACK_SIZE; ++i) s.push(i);
+    Stack<int> st;
 
-    EXPECT_THROW(s.push(999), std::overflow_error);
+    for (int i = 0; i < MAX_STACK_SIZE; i++) {
+        st.push(i);
+    }
+
+    EXPECT_THROW(st.push(100), std::overflow_error);
 }
 
+TEST(StackTest, ManyOperationsSequence) {
+    Stack<int> st;
+
+    for (int i = 0; i < 200; i++) {
+        st.push(i);
+    }
+    for (int i = 0; i < 150; i++) {
+        st.pop();
+    }
+
+    EXPECT_EQ(st.getSize(), 50);
+    EXPECT_EQ(st.peek(), 199 - 150);
+}
+
+TEST(StackCopyConstructor, CopyEmptyStack) {
+    Stack<int> s1;
+    Stack<int> s2(s1);
+    EXPECT_EQ(s2.getSize(), 0);
+}
+
+TEST(StackCopyConstructor, CopyNonEmptyStack) {
+    Stack<int> s1;
+    s1.push(10);
+    s1.push(20);
+
+    Stack<int> s2(s1);
+    EXPECT_EQ(s2.getSize(), s1.getSize());
+    EXPECT_EQ(s2.peek(), s1.peek());
+}
+
+// тесты вывода
+
 TEST(StackTest, PrintDoesNotCrash) {
-    Stack<int> s;
-    s.push(1);
-    s.push(2);
-    s.print();
+    Stack<int> st;
+    st.push(1);
+    st.push(2);
+
+    std::string out = capturePrint(st);
+    EXPECT_FALSE(out.empty());
+}
+
+TEST(StackTest, PrintEmptyStack) {
+    Stack<int> st;
+    std::string out = capturePrint(st);
+    EXPECT_NE(out.find("empty"), std::string::npos);
+}
+
+// тесты на разных шаблонах
+
+TEST(StackTest, WorksWithStrings) {
+    Stack<std::string> st;
+    st.push("hello");
+    st.push("world");
+
+    EXPECT_EQ(st.peek(), "world");
+
+    st.pop();
+    EXPECT_EQ(st.peek(), "hello");
+}
+
+TEST(StackTest, WorksWithCustomType) {
+    struct TestObj {
+        int x;
+        explicit TestObj(int v = 0) : x(v) {}
+        bool operator==(const TestObj& o) const { return x == o.x; }
+    };
+
+    Stack<TestObj> st;
+    st.push(TestObj(10));
+    st.push(TestObj(20));
+
+    EXPECT_EQ(st.peek().x, 20);
 }
