@@ -50,6 +50,6 @@ coverage: clean all run
 
 
 clean:
-	rm -rf $(BUILD_DIR) $(COVERAGE_DIR) *.gcda *.gcno
+	rm -rf $(BUILD_DIR) $(COVERAGE_DIR) *.gcda *.gcno *.txt
 
 .PHONY: all run coverage clean
