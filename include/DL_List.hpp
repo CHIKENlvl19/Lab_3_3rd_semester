@@ -6,6 +6,7 @@
 
 template <typename T>
 class DL_list {
+    template <typename K, typename V> friend class HashTable;
  private:
     struct Node {
         T value;
@@ -92,6 +93,10 @@ class DL_list {
 
     int getSize() const {
         return size;
+    }
+
+    Node* getHead() const {
+        return head;
     }
 
     void addHead(const T& value) {

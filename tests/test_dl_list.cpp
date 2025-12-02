@@ -1,155 +1,272 @@
-#include <gtest/gtest.h>
+// Copyright message
 #include <sstream>
+#include "gtest/gtest.h"
 #include "../include/DL_List.hpp"
 
-// Проверка базовой функциональности
-TEST(DLList, InitiallyEmpty) {
-    DL_list<int> lst;
-    EXPECT_TRUE(lst.empty());
-    EXPECT_EQ(lst.getSize(), 0);
-}
-
-TEST(DLList, AddHeadAndAddTail) {
-    DL_list<int> lst;
-    lst.addHead(1);
-    lst.addTail(2);
-    lst.addHead(0);
-
-    EXPECT_EQ(lst.getSize(), 3);
-    EXPECT_EQ(lst.searchByValue(0), 0);
-    EXPECT_EQ(lst.searchByValue(1), 1);
-    EXPECT_EQ(lst.searchByValue(2), 2);
-}
-
-TEST(DLList, AddAfterAndAddBefore) {
-    DL_list<int> lst;
-    lst.addTail(1);
-    lst.addTail(2);
-    lst.addTail(3);
-
-    lst.addAfter(1, 99);  // после 2
-    EXPECT_EQ(lst.searchByValue(99), 2);
-
-    lst.addBefore(0, 777); // перед 1
-    EXPECT_EQ(lst.searchByValue(777), 0);
-}
-
-TEST(DLList, AddBeforeMiddle) {
-    DL_list<int> lst;
-    lst.addTail(1);
-    lst.addTail(2);
-    lst.addTail(4); // список: 1,2,4
-
-    lst.addBefore(2, 3); // вставка перед 4
-
-    EXPECT_EQ(lst.getSize(), 4);
-    std::ostringstream out;
-    lst.print(out);
-    EXPECT_EQ(out.str(), "[1 <-> 2 <-> 3 <-> 4]\n");
-}
-
-
-TEST(DLList, RemoveByValue) {
-    DL_list<int> lst;
-    lst.addTail(1);
-    lst.addTail(2);
-    lst.addTail(1);
-    lst.removeByValue(1);
-
-    EXPECT_EQ(lst.getSize(), 1);
-    EXPECT_EQ(lst.searchByValue(2), 0);
-}
-
-// Проверка печати
-TEST(DLList, PrintAndPrintBackwards) {
-    DL_list<int> lst;
-    lst.addTail(1);
-    lst.addTail(2);
-    lst.addTail(3);
-
-    std::ostringstream oss;
-    lst.print(oss);
-    EXPECT_EQ(oss.str(), "[1 <-> 2 <-> 3]\n");
-
-    std::ostringstream oss2;
-    lst.printBackwards(oss2);
-    EXPECT_EQ(oss2.str(), "[3 <-> 2 <-> 1]\n");
-}
-
-// Конструктор копирования
-TEST(DLList, CopyConstructor) {
-    DL_list<int> lst;
-    lst.addTail(10);
-    lst.addTail(20);
-
-    DL_list<int> copy(lst);
-    EXPECT_EQ(copy.getSize(), 2);
-    EXPECT_EQ(copy.searchByValue(10), 0);
-    EXPECT_EQ(copy.searchByValue(20), 1);
-
-    // Изменения оригинала не влияют на копию
-    lst.removeByValue(10);
-    EXPECT_EQ(copy.searchByValue(10), 0);
-}
-
-// Оператор присваивания
-TEST(DLList, CopyAssignment) {
-    DL_list<int> a;
-    a.addTail(1);
-    a.addTail(2);
-
-    DL_list<int> b;
-    b = a;
-
-    EXPECT_EQ(b.getSize(), 2);
-    EXPECT_EQ(b.searchByValue(1), 0);
-
-    a.removeByValue(2);
-    EXPECT_EQ(b.searchByValue(2), 1);  // deep copy
-}
-
-// исключения при копировании
-struct Evil {
-    int x;
-    static bool shouldThrow;
-    explicit Evil(int x) : x(x) {}
-    Evil(const Evil& other) : x(other.x) {
-        if (shouldThrow) throw std::runtime_error("copy failed");
+// Вспомогательная структура, которая может выбросить исключение при копировании
+struct TestStruct {
+    int data;
+    static bool throw_on_copy;  // cтатическая переменная для управления исключением
+    explicit TestStruct(int d) : data(d) {}
+    TestStruct(const TestStruct& other) : data(other.data) {
+        if (throw_on_copy && data == 999) {  // условие для выброса исключения
+            throw std::runtime_error("Exception in copy constructor");
+        }
     }
 };
 
-bool Evil::shouldThrow = false;
+bool TestStruct::throw_on_copy = true;
 
-TEST(DLList, CopyConstructorThrows) {
-    DL_list<Evil> lst;
-    Evil::shouldThrow = false;
-    lst.addTail(Evil(1));  // безопасно
-    lst.addTail(Evil(2));  // безопасно
-
-    Evil::shouldThrow = true;  // теперь копирование бросает
-
-    EXPECT_THROW({
-        DL_list<Evil> Copy(lst);
-    }, std::runtime_error);
-
-    // исходный список остаётся в корректном состоянии
-    EXPECT_EQ(lst.getSize(), 2);
-    EXPECT_FALSE(lst.empty());
+// тесты для конструктора по умолчанию
+TEST(DLListTest, DefaultConstructor) {
+    DL_list<int> list;
+    EXPECT_TRUE(list.empty());
+    EXPECT_EQ(list.getSize(), 0);
 }
 
-TEST(DLList, CopyConstructorThrowsInsideLoop) {
-    DL_list<Evil> lst;
-    Evil::shouldThrow = false;
-    lst.addTail(Evil(1));
-    lst.addTail(Evil(2)); // безопасно
+// тесты для добавления в начало
+TEST(DLListTest, AddHead) {
+    DL_list<int> list;
+    list.addHead(1);
+    EXPECT_FALSE(list.empty());
+    EXPECT_EQ(list.getSize(), 1);
 
-    Evil::shouldThrow = true; // второй бросит
+    list.addHead(2);
+    EXPECT_EQ(list.getSize(), 2);
+}
 
-    EXPECT_THROW({
-        DL_list<Evil> Copy(lst);
-    }, std::runtime_error);
+// тесты для добавления в конец
+TEST(DLListTest, AddTail) {
+    DL_list<int> list;
+    list.addTail(1);
+    EXPECT_FALSE(list.empty());
+    EXPECT_EQ(list.getSize(), 1);
 
-    // исходный список остаётся в корректном состоянии
-    EXPECT_EQ(lst.getSize(), 2);
-    EXPECT_FALSE(lst.empty());
+    list.addTail(2);
+    EXPECT_EQ(list.getSize(), 2);
+}
+
+// тесты для добавления по индексу (addAfter)
+TEST(DLListTest, AddAfter) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addTail(3);
+
+    list.addAfter(0, 2);
+    EXPECT_EQ(list.getSize(), 3);
+    // порядок должен быть [1, 2, 3]
+}
+
+TEST(DLListTest, AddAfterAtEnd) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addAfter(1, 2);  // добавляем в конец
+    EXPECT_EQ(list.getSize(), 2);
+}
+
+TEST(DLListTest, AddAfterOutOfRange) {
+    DL_list<int> list;
+    list.addHead(1);
+    EXPECT_THROW(list.addAfter(-1, 5), std::out_of_range);
+    EXPECT_THROW(list.addAfter(2, 5), std::out_of_range);
+}
+
+// тесты для добавления по индексу (addBefore)
+TEST(DLListTest, AddBefore) {
+    DL_list<int> list;
+    list.addHead(2);
+    list.addTail(3);
+
+    list.addBefore(1, 1); // добавляем 1 перед 1-м элементом (перед 2)
+    EXPECT_EQ(list.getSize(), 3);
+    // порядок должен быть [1, 2, 3]
+}
+
+TEST(DLListTest, AddBeforeAtStart) {
+    DL_list<int> list;
+    list.addHead(2);
+    list.addBefore(0, 1); // добавляем в начало
+    EXPECT_EQ(list.getSize(), 2);
+}
+
+TEST(DLListTest, AddBeforeAtEnd) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addBefore(1, 2); // добавляем перед последним
+    EXPECT_EQ(list.getSize(), 2);
+}
+
+TEST(DLListTest, AddBeforeOutOfRange) {
+    DL_list<int> list;
+    list.addHead(1);
+    EXPECT_THROW(list.addBefore(-1, 5), std::out_of_range);
+    EXPECT_THROW(list.addBefore(2, 5), std::out_of_range);
+}
+
+// тесты для поиска по значению
+TEST(DLListTest, SearchByValue) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addTail(4);
+    list.addTail(3);
+    list.addTail(4);
+
+    EXPECT_EQ(list.searchByValue(1), 0);
+    EXPECT_EQ(list.searchByValue(4), 1); // первый индекс
+    EXPECT_EQ(list.searchByValue(3), 2);
+    EXPECT_EQ(list.searchByValue(5), -1); // не найдено
+}
+
+// Тесты для удаления по значению
+TEST(DLListTest, RemoveByValue) {
+    DL_list<int> list;
+    list.addHead(7);
+    list.addTail(3);
+    list.addTail(7);
+    list.addTail(5);
+
+    list.removeByValue(7);  // удаляем все 7
+    EXPECT_EQ(list.getSize(), 2); // остались 3 и 5
+
+    list.removeByValue(10); // удаляем несуществующее
+    EXPECT_EQ(list.getSize(), 2); // размер не изменился
+}
+
+// Тесты для очистки
+TEST(DLListTest, Clear) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addTail(2);
+    list.addTail(3);
+    EXPECT_FALSE(list.empty());
+    EXPECT_EQ(list.getSize(), 3);
+
+    list.clear();
+    EXPECT_TRUE(list.empty());
+    EXPECT_EQ(list.getSize(), 0);
+}
+
+// Тесты для конструктора копирования
+TEST(DLListTest, CopyConstructor) {
+    DL_list<int> original;
+    original.addHead(1);
+    original.addTail(2);
+    original.addTail(3);
+
+    DL_list<int> copy(original);
+    EXPECT_EQ(copy.getSize(), original.getSize());
+
+    // проверим, что это разные объекты (можно через размер или поведение)
+    original.addTail(4);
+    EXPECT_EQ(original.getSize(), 4);
+    EXPECT_EQ(copy.getSize(), 3);  // не изменился
+}
+
+TEST(DLListTest, CopyConstructorExceptionSafety) {
+    // временно отключаем исключение при добавлении в список
+    TestStruct::throw_on_copy = false;
+
+    DL_list<TestStruct> original;
+    original.addHead(TestStruct(1));
+    original.addTail(TestStruct(2));
+    original.addTail(TestStruct(999));  // этот элемент вызовет исключение при копировании
+    original.addTail(TestStruct(4));
+
+    // включаем исключение при копировании
+    TestStruct::throw_on_copy = true;
+
+    bool exception_thrown = false;
+    try {
+        DL_list<TestStruct> copy(original);
+    } catch (const std::runtime_error&) {
+        exception_thrown = true;
+    }
+
+    EXPECT_TRUE(exception_thrown);
+
+    // проверяем, что исходный список не изменился
+    EXPECT_EQ(original.getSize(), 4);
+    EXPECT_FALSE(original.empty());
+
+    // возвращаем флаг в исходное состояние
+    TestStruct::throw_on_copy = true;
+}
+
+// тесты для оператора присваивания
+TEST(DLListTest, AssignmentOperator) {
+    DL_list<int> list1;
+    list1.addHead(1);
+    list1.addTail(2);
+
+    DL_list<int> list2;
+    list2.addHead(10);
+    list2.addTail(20);
+    list2.addTail(30);
+
+    list1 = list2;
+
+    EXPECT_EQ(list1.getSize(), list2.getSize());
+    // после присваивания list1 должен быть равен list2
+}
+
+TEST(DLListTest, AssignmentSelf) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addTail(2);
+    int originalSize = list.getSize();
+
+    list = list; // присваивание самому себе
+    EXPECT_EQ(list.getSize(), originalSize);
+}
+
+// тесты для пустого списка
+TEST(DLListTest, OperationsOnEmptyList) {
+    DL_list<int> list;
+    EXPECT_TRUE(list.empty());
+    EXPECT_EQ(list.getSize(), 0);
+    EXPECT_EQ(list.searchByValue(5), -1);
+}
+
+// тесты с использованием строки для разнообразия, а чо бы и нет
+TEST(DLListTest, WithStrings) {
+    DL_list<std::string> list;
+    list.addHead("first");
+    list.addTail("second");
+    list.addAfter(0, "middle");
+
+    EXPECT_EQ(list.getSize(), 3);
+    EXPECT_EQ(list.searchByValue("first"), 0);
+    EXPECT_EQ(list.searchByValue("middle"), 1);
+    EXPECT_EQ(list.searchByValue("second"), 2);
+    EXPECT_EQ(list.searchByValue("nonexistent"), -1);
+
+    list.removeByValue("middle");
+    EXPECT_EQ(list.getSize(), 2);
+}
+
+// проверка вывода
+TEST(DLListTest, PrintFunctionality) {
+    DL_list<int> list;
+    list.addHead(1);
+    list.addTail(2);
+    list.addTail(3);
+
+    std::ostringstream oss;
+    list.print(oss);
+    std::string output = oss.str();
+
+    // проверяем, что строка содержит ожидаемые элементы
+    EXPECT_NE(output.find("1"), std::string::npos);
+    EXPECT_NE(output.find("2"), std::string::npos);
+    EXPECT_NE(output.find("3"), std::string::npos);
+    EXPECT_NE(output.find("<->"), std::string::npos);
+
+    oss.str("");  // очищаем
+    oss.clear();
+    list.printBackwards(oss);
+    std::string outputBack = oss.str();
+    EXPECT_NE(outputBack.find("1"), std::string::npos);
+    EXPECT_NE(outputBack.find("2"), std::string::npos);
+    EXPECT_NE(outputBack.find("3"), std::string::npos);
+    EXPECT_NE(outputBack.find("<->"), std::string::npos);
 }

@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS= -std=c++20 -Wall -Wextra -O0 --coverage
-LDFLAGS= --coverage -lgtest -lgtest_main -pthread
+LDFLAGS= --coverage -lgtest -lgtest_main -pthread -lgmp -lgmpxx
 
 SRC_DIR=src
 INC_DIR=include
@@ -37,6 +37,7 @@ coverage: clean all run
     "/usr/*" \
     "*/googletest/*" \
 	"*/test_*" \
+	"myQueue_for_CBT.hpp"\
     -o coverage/coverage_clean.info \
     --ignore-errors inconsistent \
     --ignore-errors mismatch \
