@@ -1,5 +1,6 @@
 // Copyright message
 #include <gtest/gtest.h>
+#include <string>
 #include "../include/HashTableOA.hpp"
 
 // ================== BASICS ==================
