@@ -80,7 +80,8 @@ TEST(HashTableTest, CollisionHandling) {
 
     // Проверяем, что ВСЕ элементы сохранены (метод цепочек должен справиться)
     for (int i = 0; i < 10; ++i) {
-        EXPECT_TRUE(ht.isPresent(i)) << "Key " << i << " was lost due to collision";
+        EXPECT_TRUE(ht.isPresent(i)) << "Key "
+            << i << " was lost due to collision";
         EXPECT_EQ(ht.find(i), i * 100);
     }
 }

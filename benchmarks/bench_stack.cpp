@@ -1,0 +1,124 @@
+#include <benchmark/benchmark.h>
+#include "../include/myStack.hpp"   // путь поправь под свой проект
+#include <vector>
+
+// ----------------------------------------
+// Benchmark: push()
+// ----------------------------------------
+static void BM_Stack_Push(benchmark::State& state) {
+    int N = state.range(0);
+    for (auto _ : state) {
+        Stack<int> st;
+        for (int i = 0; i < N; i++) {
+            st.push(i);
+        }
+        benchmark::ClobberMemory();
+    }
+}
+
+BENCHMARK(BM_Stack_Push)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);
+
+// ----------------------------------------
+// Benchmark: pop()
+// ----------------------------------------
+static void BM_Stack_Pop(benchmark::State& state) {
+    int N = state.range(0);
+
+    for (auto _ : state) {
+        Stack<int> st;
+        for (int i = 0; i < N; i++) st.push(i);
+
+        for (int i = 0; i < N; i++) {
+            st.pop();
+        }
+        benchmark::ClobberMemory();
+    }
+}
+
+BENCHMARK(BM_Stack_Pop)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);
+
+// ----------------------------------------
+// Benchmark: peek()
+// ----------------------------------------
+static void BM_Stack_Peek(benchmark::State& state) {
+    int N = state.range(0);
+
+    Stack<int> st;
+    for (int i = 0; i < N; i++) st.push(i);
+
+    for (auto _ : state) {
+        int x = st.peek();
+        benchmark::DoNotOptimize(x);
+    }
+}
+
+BENCHMARK(BM_Stack_Peek)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);
+
+// ----------------------------------------
+// Benchmark: Copy Constructor
+// ----------------------------------------
+static void BM_Stack_CopyCtor(benchmark::State& state) {
+    int N = state.range(0);
+
+    Stack<int> st;
+    for (int i = 0; i < N; i++) st.push(i);
+
+    for (auto _ : state) {
+        Stack<int> copy(st);
+        benchmark::ClobberMemory();
+    }
+}
+
+BENCHMARK(BM_Stack_CopyCtor)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);
+
+// ----------------------------------------
+// Benchmark: operator=
+// ----------------------------------------
+static void BM_Stack_Assignment(benchmark::State& state) {
+    int N = state.range(0);
+
+    Stack<int> st;
+    for (int i = 0; i < N; i++) st.push(i);
+
+    for (auto _ : state) {
+        Stack<int> st2;
+        st2 = st;
+        benchmark::ClobberMemory();
+    }
+}
+
+BENCHMARK(BM_Stack_Assignment)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);
+
+// ----------------------------------------
+// Benchmark: Full cycle (push + pop)
+// ----------------------------------------
+static void BM_Stack_FullCycle(benchmark::State& state) {
+    int N = state.range(0);
+
+    for (auto _ : state) {
+        Stack<int> st;
+        for (int i = 0; i < N; i++) st.push(i);
+        for (int i = 0; i < N; i++) st.pop();
+        benchmark::ClobberMemory();
+    }
+}
+
+BENCHMARK(BM_Stack_FullCycle)
+    ->Arg(100)
+    ->Arg(1000)
+    ->Arg(5000);

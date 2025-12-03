@@ -159,7 +159,7 @@ class HashTable {
 
     // и для большей устойчивости можно чуть подстраховать isPresent:
     bool isPresent(const Key& key) {
-        if (!buckets) return false; // защитная проверка — на всякий случай
+        if (!buckets) return false;  // защитная проверка — на всякий случай
         int index = hashing(key);
         return searchPairByKey(buckets[index].values, key) != -1;
     }

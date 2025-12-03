@@ -5,7 +5,7 @@
 #include <vector>
 #include <stdexcept>
 
-const int MAX_STACK_SIZE = 1000;
+const int MAX_STACK_SIZE = 1000000;
 
 template <typename T>
 class Stack {

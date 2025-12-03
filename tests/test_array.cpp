@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <chrono>
 #include "../include/myArray.hpp"
 
 
