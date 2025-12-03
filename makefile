@@ -15,7 +15,7 @@ TESTS=$(wildcard $(TEST_DIR)/*.cpp)
 TARGET=$(BUILD_DIR)/test_exec
 BENCH_TARGET=$(BUILD_DIR)/bench_exec
 
-BENCH_SOURCES=$(wildcard $(TEST_DIR)/*bench*.cpp)
+BENCH_SOURCES=$(wildcard $(BENCH_DIR)/*.cpp)
 TEST_SOURCES=$(filter-out $(BENCH_SOURCES), $(TESTS))
 
 all: $(TARGET)

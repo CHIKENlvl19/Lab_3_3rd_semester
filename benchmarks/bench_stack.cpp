@@ -1,10 +1,9 @@
+// Copyright message
 #include <benchmark/benchmark.h>
-#include "../include/myStack.hpp"   // путь поправь под свой проект
 #include <vector>
+#include "../include/myStack.hpp"   // путь поправь под свой проект
 
-// ----------------------------------------
-// Benchmark: push()
-// ----------------------------------------
+
 static void BM_Stack_Push(benchmark::State& state) {
     int N = state.range(0);
     for (auto _ : state) {
@@ -21,9 +20,6 @@ BENCHMARK(BM_Stack_Push)
     ->Arg(1000)
     ->Arg(5000);
 
-// ----------------------------------------
-// Benchmark: pop()
-// ----------------------------------------
 static void BM_Stack_Pop(benchmark::State& state) {
     int N = state.range(0);
 
@@ -43,9 +39,6 @@ BENCHMARK(BM_Stack_Pop)
     ->Arg(1000)
     ->Arg(5000);
 
-// ----------------------------------------
-// Benchmark: peek()
-// ----------------------------------------
 static void BM_Stack_Peek(benchmark::State& state) {
     int N = state.range(0);
 
@@ -63,9 +56,6 @@ BENCHMARK(BM_Stack_Peek)
     ->Arg(1000)
     ->Arg(5000);
 
-// ----------------------------------------
-// Benchmark: Copy Constructor
-// ----------------------------------------
 static void BM_Stack_CopyCtor(benchmark::State& state) {
     int N = state.range(0);
 
@@ -83,9 +73,6 @@ BENCHMARK(BM_Stack_CopyCtor)
     ->Arg(1000)
     ->Arg(5000);
 
-// ----------------------------------------
-// Benchmark: operator=
-// ----------------------------------------
 static void BM_Stack_Assignment(benchmark::State& state) {
     int N = state.range(0);
 
@@ -104,9 +91,6 @@ BENCHMARK(BM_Stack_Assignment)
     ->Arg(1000)
     ->Arg(5000);
 
-// ----------------------------------------
-// Benchmark: Full cycle (push + pop)
-// ----------------------------------------
 static void BM_Stack_FullCycle(benchmark::State& state) {
     int N = state.range(0);
 

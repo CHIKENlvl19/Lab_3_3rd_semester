@@ -92,7 +92,6 @@ class HashTable {
         a(other.a),
         b(other.b),
         p(other.p)  {
-
         buckets = new Bucket<Key, Value>[capacity];
 
         for (int i = 0; i < capacity; i++) {
@@ -258,7 +257,7 @@ class HashTable {
     }*/
 
     mpz_class generate_safe_prime
-        (GmpStateWrapper& state_wrapper, int bits) {  // ПРИМЕЧАНИЕ: Измените тип аргумента
+        (GmpStateWrapper& state_wrapper, int bits) {
         mpz_class prime;
         mpz_urandomb(prime.get_mpz_t(), state_wrapper.get_state(), bits);
         mpz_nextprime(prime.get_mpz_t(), prime.get_mpz_t());
