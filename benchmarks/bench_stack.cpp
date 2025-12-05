@@ -13,6 +13,8 @@ static void BM_Stack_Push(benchmark::State& state) {
         }
         benchmark::ClobberMemory();
     }
+
+    state.SetItemsProcessed(state.iterations());
 }
 
 BENCHMARK(BM_Stack_Push)
@@ -32,6 +34,8 @@ static void BM_Stack_Pop(benchmark::State& state) {
         }
         benchmark::ClobberMemory();
     }
+
+    state.SetItemsProcessed(state.iterations());
 }
 
 BENCHMARK(BM_Stack_Pop)
@@ -49,6 +53,8 @@ static void BM_Stack_Peek(benchmark::State& state) {
         int x = st.peek();
         benchmark::DoNotOptimize(x);
     }
+
+    state.SetItemsProcessed(state.iterations());
 }
 
 BENCHMARK(BM_Stack_Peek)
@@ -66,6 +72,8 @@ static void BM_Stack_CopyCtor(benchmark::State& state) {
         Stack<int> copy(st);
         benchmark::ClobberMemory();
     }
+
+    state.SetItemsProcessed(state.iterations());
 }
 
 BENCHMARK(BM_Stack_CopyCtor)
@@ -84,6 +92,9 @@ static void BM_Stack_Assignment(benchmark::State& state) {
         st2 = st;
         benchmark::ClobberMemory();
     }
+
+    state.SetItemsProcessed(state.iterations());
+
 }
 
 BENCHMARK(BM_Stack_Assignment)
@@ -100,6 +111,9 @@ static void BM_Stack_FullCycle(benchmark::State& state) {
         for (int i = 0; i < N; i++) st.pop();
         benchmark::ClobberMemory();
     }
+
+    state.SetItemsProcessed(state.iterations());
+
 }
 
 BENCHMARK(BM_Stack_FullCycle)
