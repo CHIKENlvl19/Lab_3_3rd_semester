@@ -62,23 +62,27 @@ BENCHMARK(BM_HashTable_Find)->Arg(1000)->Arg(5000)->Arg(10000)->Arg(50000);
 // ------------------------------
 static void BM_HashTable_Remove(benchmark::State& state) {
     const size_t capacity = state.range(0);
-
     auto data = generate_random_ints(capacity);
 
-    for (auto _ : state) {
-        HashTableOA<int, int> table(capacity);
+    // 1. Создаем таблицу ОДИН РАЗ
+    HashTableOA<int, int> table(capacity);
 
+    for (auto _ : state) {
+        // 2. Ставим на паузу таймер для подготовки
+        state.PauseTiming(); 
+        table.clean(); // Наш новый быстрый метод
         for (size_t i = 0; i < capacity; i++) {
             table.insert(data[i], i);
         }
+        state.ResumeTiming();
+
+        // 3. Замеряем только удаление
         for (size_t i = 0; i < capacity; i++) {
             table.remove(data[i]);
         }
-
-        benchmark::ClobberMemory();
     }
 
     state.SetItemsProcessed(state.iterations() * capacity);
 }
 
-BENCHMARK(BM_HashTable_Remove)->Arg(1000)->Arg(5000)->Arg(10000)->Arg(50000);
+BENCHMARK(BM_HashTable_Remove)->Arg(1000)->Arg(5000)->Arg(10000);
