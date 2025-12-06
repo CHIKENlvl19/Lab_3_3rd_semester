@@ -108,7 +108,6 @@ class HashTableOA {
     }
 
 
-
     bool remove(const Key& key) {
         size_t index;
         for (size_t i = 0; i < capacity; i++) {

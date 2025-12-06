@@ -33,7 +33,7 @@ bench: $(BENCH_TARGET)
 
 $(BENCH_TARGET): $(SOURCES) $(BENCH_SOURCES)
 	mkdir -p $(BUILD_DIR)
-	$(CXX) -std=c++20 -O2 -I$(INC_DIR) $(SOURCES) $(BENCH_SOURCES) -o $(BENCH_TARGET) -lgtest -lbenchmark -lpthread
+	$(CXX) -std=c++20 -O2 -I$(INC_DIR) $(SOURCES) $(BENCH_SOURCES) -o $(BENCH_TARGET) -lgtest -lbenchmark -lpthread -fsanitize=address
 
 run_bench: bench
 	$(BENCH_TARGET)

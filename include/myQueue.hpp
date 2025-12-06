@@ -27,6 +27,24 @@ class myQueue {
         }
     }
 
+    myQueue& operator=(const myQueue& other) {
+        if (this != &other) {
+            delete[] data;
+
+            capacity = other.capacity;
+            size = other.size;
+            head = 0;
+            tail = size;
+            data = new T[capacity];
+
+            for (int i = 0; i < size; ++i) {
+                data[i] = other.data[(other.head + i) % other.capacity];
+            }
+        }
+        return *this;
+    }
+
+
     ~myQueue() {
         clean();
     }
