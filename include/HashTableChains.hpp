@@ -132,16 +132,16 @@ class HashTable {
             size++;
             loadFactor = static_cast<float>(size) / capacity;
         } else {
-            std::cerr << "Error, key " << key
-                << " is already in the table!" << std::endl;
+            //std::cerr << "Error, key " << key
+            //    << " is already in the table!" << std::endl;
         }
     }
 
 
     void remove(const Key& key) {
         if (!isPresent(key)) {
-            std::cerr << "Error, key " << key
-                << " is not present in table!" << std::endl;
+            //std::cerr << "Error, key " << key
+            //    << " is not present in table!" << std::endl;
             return;
         }
 
@@ -178,18 +178,14 @@ class HashTable {
     }
 
 
-    // замените существующий clean()
     void clean() {
         if (buckets) {
             delete[] buckets;
+            buckets = nullptr;  // ← не выделяем новую память!
         }
-        // Оставляем прежнюю capacity — но создаём пустой массив бакетов,
-        // чтобы таблица оставалась работоспособной после clean().
-        buckets = new Bucket<Key, Value>[capacity];
         size = 0;
         loadFactor = 0.0f;
     }
-
 
     void print() {
         std::ofstream out("hash_table.txt");

@@ -1,8 +1,8 @@
 // Copyright message
 #include <benchmark/benchmark.h>
-#include "../include/myQueue.hpp"
 #include <vector>
 #include <random>
+#include "../include/myQueue.hpp"
 
 // ------------------------------------------------------
 // Вспомогательная генерация случайных чисел

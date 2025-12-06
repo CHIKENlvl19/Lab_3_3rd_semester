@@ -105,7 +105,7 @@ class myQueue {
     }
 
     void push(const T& value, const std::string& filename) {
-        loadFromFile(filename);
+        //loadFromFile(filename);
 
         if (size == capacity) {
             int newCapacity = capacity * 2;
@@ -126,11 +126,11 @@ class myQueue {
         tail = (tail + 1) % capacity;
         size++;
 
-        saveToFile(filename);
+        //saveToFile(filename);
     }
 
     void pop(const std::string& filename) {
-        loadFromFile(filename);
+        //loadFromFile(filename);
 
         if (size == 0) {
             throw std::underflow_error("Queue is empty!");
@@ -139,7 +139,7 @@ class myQueue {
         head = (head + 1) % capacity;
         size--;
 
-        saveToFile(filename);
+        //saveToFile(filename);
     }
 
     void print() const {
