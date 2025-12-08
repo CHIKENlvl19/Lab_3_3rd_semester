@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <fstream>
+#include <string>
 
 const int MAX_STACK_SIZE = 1000000;
 
@@ -99,6 +101,113 @@ class Stack {
     int getSize() const {
         return size;
     }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file << size << "\n";
+
+        if (size > 0) {
+            T* elements = new T[size];
+            Node* cur = head;
+            int idx = 0;
+            while (cur) {
+                elements[idx++] = cur->value;
+                cur = cur->next;
+            }
+
+            for (int i = size - 1; i >= 0; --i) {
+                file << elements[i];
+                if (i > 0) file << " ";
+            }
+            delete[] elements;
+        }
+        file.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clean();
+
+        int newSize;
+        file >> newSize;
+
+        if (newSize > 0) {
+            T* elements = new T[newSize];
+            for (int i = 0; i < newSize; ++i) {
+                file >> elements[i];
+            }
+
+            for (int i = 0; i < newSize; ++i) {
+                push(elements[i]);
+            }
+            delete[] elements;
+        }
+
+        file.close();
+    }
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+        if (size > 0) {
+            T* elements = new T[size];
+            Node* cur = head;
+            int idx = 0;
+            while (cur) {
+                elements[idx++] = cur->value;
+                cur = cur->next;
+            }
+
+            for (int i = size - 1; i >= 0; --i) {
+                file.write(reinterpret_cast<const char*>(&elements[i]), sizeof(T));
+            }
+            delete[] elements;
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clean();
+
+        int newSize;
+        file.read(reinterpret_cast<char*>(&newSize), sizeof(newSize));
+
+        if (newSize > 0) {
+            T* elements = new T[newSize];
+            for (int i = 0; i < newSize; ++i) {
+                file.read(reinterpret_cast<char*>(&elements[i]), sizeof(T));
+            }
+
+            for (int i = 0; i < newSize; ++i) {
+                push(elements[i]);
+            }
+            delete[] elements;
+        }
+
+        file.close();
+    }
+
+
 
  private:
     struct Node {

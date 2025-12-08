@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <fstream>
+#include <string>
 #include "../include/myQueue_for_CBT.hpp"
 
 template <typename T>
@@ -46,6 +48,25 @@ class CompleteBinaryTree {
 
         goRight = (index & 1);  // последний бит определяет left/right
         return current;
+    }
+
+    void clear() {
+        if (!root) return;
+        CBTQueue<Node*> q;
+        q.push(root);
+        while (!q.empty()) {
+            Node* n = q.front();
+            q.pop();
+            if (n->left) {
+                q.push(n->left);
+            }
+            if (n->right) {
+                q.push(n->right);
+            }
+            delete n;
+        }
+        root = nullptr;
+        size = 0;
     }
 
  public:
@@ -125,27 +146,6 @@ class CompleteBinaryTree {
         return *this;
     }
 
- private:
-    void clear() {
-        if (!root) return;
-        CBTQueue<Node*> q;
-        q.push(root);
-        while (!q.empty()) {
-            Node* n = q.front();
-            q.pop();
-            if (n->left) {
-                q.push(n->left);
-            }
-            if (n->right) {
-                q.push(n->right);
-            }
-            delete n;
-        }
-        root = nullptr;
-        size = 0;
-    }
-
- public:
     int getSize() const {
         return size;
     }
@@ -238,5 +238,99 @@ class CompleteBinaryTree {
             }
         }
         std::cout << "]" << std::endl;
+    }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file << size << "\n";
+
+        if (root) {
+            CBTQueue<Node*> q;
+            q.push(root);
+            bool first = true;
+
+            while (!q.empty()) {
+                Node* node = q.front();
+                q.pop();
+
+                if (!first) file << " ";
+                first = false;
+                file << node->value;
+
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+            }
+        }
+        file.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file >> newSize;
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file >> value;
+            insert(value);
+        }
+        file.close();
+    }
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+        if (root) {
+            CBTQueue<Node*> q;
+            q.push(root);
+
+            while (!q.empty()) {
+                Node* node = q.front();
+                q.pop();
+
+                file.write(reinterpret_cast<const char*>(&node->value)
+                    , sizeof(T));
+
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+            }
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file.read(reinterpret_cast<char*>(&newSize), sizeof(newSize));
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file.read(reinterpret_cast<char*>(&value), sizeof(T));
+            insert(value);
+        }
+        file.close();
     }
 };

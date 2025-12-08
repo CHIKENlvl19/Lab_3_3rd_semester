@@ -5,6 +5,7 @@
 #include <random>
 #include <utility>
 #include <type_traits>
+#include <fstream>
 
 template <typename Key, typename Value>
 class HashTableOA {
@@ -165,6 +166,100 @@ class HashTableOA {
 
         return static_cast<float>(size) / capacity;
     }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file << size << " " << capacity << " " << a << " " << b << " " << p << "\n";
+
+        for (size_t i = 0; i < capacity; i++) {
+            if (table[i].isOccupied && !table[i].isDeleted) {
+                file << table[i].key << " " << table[i].value << "\n";
+            }
+        }
+        file.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        delete[] table;
+
+        size_t oldSize;  // ← Сохраняем СТАРЫЙ размер
+        file >> oldSize >> capacity >> a >> b >> p;
+
+        table = new Cell[capacity];
+        size = 0;  // ← Обнуляем, потому что insert() будет его увеличивать
+        loadFactor = 0.0f;
+
+        for (size_t i = 0; i < oldSize; ++i) {  // ← Используем oldSize
+            Key key;
+            Value value;
+            file >> key >> value;
+            insert(key, value);
+        }
+        file.close();
+    }
+
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+        file.write(reinterpret_cast<const char*>(&capacity), sizeof(capacity));
+        file.write(reinterpret_cast<const char*>(&a), sizeof(a));
+        file.write(reinterpret_cast<const char*>(&b), sizeof(b));
+        file.write(reinterpret_cast<const char*>(&p), sizeof(p));
+
+        for (size_t i = 0; i < capacity; i++) {
+            if (table[i].isOccupied && !table[i].isDeleted) {
+                file.write(reinterpret_cast<const char*>(&table[i].key), sizeof(Key));
+                file.write(reinterpret_cast<const char*>(&table[i].value), sizeof(Value));
+            }
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        delete[] table;
+
+        size_t oldSize;  // ← Сохраняем СТАРЫЙ размер
+        file.read(reinterpret_cast<char*>(&oldSize), sizeof(oldSize));
+        file.read(reinterpret_cast<char*>(&capacity), sizeof(capacity));
+        file.read(reinterpret_cast<char*>(&a), sizeof(a));
+        file.read(reinterpret_cast<char*>(&b), sizeof(b));
+        file.read(reinterpret_cast<char*>(&p), sizeof(p));
+
+        table = new Cell[capacity];
+        size = 0;  // ← Обнуляем
+        loadFactor = 0.0f;
+
+        for (size_t i = 0; i < oldSize; ++i) {  // ← Используем oldSize
+            Key key;
+            Value value;
+            file.read(reinterpret_cast<char*>(&key), sizeof(Key));
+            file.read(reinterpret_cast<char*>(&value), sizeof(Value));
+            insert(key, value);
+        }
+        file.close();
+    }
+
 
  private:
     struct Cell {

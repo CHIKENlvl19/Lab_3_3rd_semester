@@ -55,58 +55,7 @@ class myQueue {
         head = tail = size = capacity = 0;
     }
 
-    void loadFromFile(const std::string& filename) {
-        std::ifstream in(filename);
-        clean();
-
-        if (!in.is_open()) {
-            capacity = 4;
-            data = new T[capacity];
-            return;
-        }
-
-        // cчитаем количество элементов в файле
-        int count = 0;
-        T temp;
-        while (in >> temp) {
-            count++;
-        }
-
-        capacity = 4;
-        while (capacity < count) {
-            capacity *= 2;
-        }
-
-        data = new T[capacity];
-        head = 0;
-        size = count;
-        tail = count;
-
-        // сброс позиции файла
-        in.clear();
-        in.seekg(0, std::ios::beg);
-
-        for (int i = 0; i < count; ++i) {
-            in >> data[i];
-        }
-
-        in.close();
-    }
-
-    void saveToFile(const std::string& filename) const {
-        std::ofstream out(filename, std::ios::trunc);
-        if (!out.is_open()) {
-            throw std::runtime_error("Cannot open queue file!");
-        }
-
-        for (int i = 0; i < size; ++i) {
-            out << data[(head + i) % capacity] << "\n";
-        }
-    }
-
-    void push(const T& value, const std::string& filename) {
-        //loadFromFile(filename);
-
+    void push(const T& value) {
         if (size == capacity) {
             int newCapacity = capacity * 2;
             T* newData = new T[newCapacity];
@@ -125,21 +74,15 @@ class myQueue {
         data[tail] = value;
         tail = (tail + 1) % capacity;
         size++;
-
-        //saveToFile(filename);
     }
 
-    void pop(const std::string& filename) {
-        //loadFromFile(filename);
-
+    void pop() {
         if (size == 0) {
             throw std::underflow_error("Queue is empty!");
         }
 
         head = (head + 1) % capacity;
         size--;
-
-        //saveToFile(filename);
     }
 
     void print() const {
@@ -161,6 +104,82 @@ class myQueue {
     int getCapacity() const {
         return capacity;
     }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream out(filename);
+        if (!out.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+        out << size << " " << capacity << "\n";
+        for (int i = 0; i < size; ++i) {
+            out << data[(head + i) % capacity];
+            if (i < size - 1) out << " ";
+        }
+        out.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream in(filename);
+        if (!in.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        int newSize, newCapacity;
+        in >> newSize >> newCapacity;
+
+        delete[] data;
+        capacity = newCapacity;
+        size = newSize;
+        head = 0;
+        tail = size % capacity;
+        data = new T[capacity];
+
+        for (int i = 0; i < size; ++i) {
+            in >> data[i];
+        }
+        in.close();
+    }
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+        file.write(reinterpret_cast<const char*>(&capacity), sizeof(capacity));
+
+        for (int i = 0; i < size; ++i) {
+            T value = data[(head + i) % capacity];
+            file.write(reinterpret_cast<const char*>(&value), sizeof(T));
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        int newSize, newCapacity;
+        file.read(reinterpret_cast<char*>(&newSize), sizeof(newSize));
+        file.read(reinterpret_cast<char*>(&newCapacity), sizeof(newCapacity));
+
+        delete[] data;
+        capacity = newCapacity;
+        size = newSize;
+        head = 0;
+        tail = size % capacity;
+        data = new T[capacity];
+
+        for (int i = 0; i < size; ++i) {
+            file.read(reinterpret_cast<char*>(&data[i]), sizeof(T));
+        }
+        file.close();
+    }
+
 
  private:
     T* data;

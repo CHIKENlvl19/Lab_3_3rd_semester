@@ -3,17 +3,20 @@
 #include <iostream>
 #include <utility>
 #include <stdexcept>
+#include <string>
+#include <fstream>
 
 template <typename T>
 class DL_list {
     template <typename K, typename V> friend class HashTable;
+
  private:
     struct Node {
-        T value;
-        Node* next;
-        Node* previous;
-        explicit Node(const T& v, Node* n = nullptr, Node* p = nullptr)
-            : value(v), next(n), previous(p) {}
+    T value;
+    Node* next;
+    Node* previous;
+    explicit Node(const T& v, Node* n = nullptr, Node* p = nullptr)
+        : value(v), next(n), previous(p) {}
     };
 
     Node* head;
@@ -235,6 +238,79 @@ class DL_list {
         }
         os << "]\n";
     }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file << size << "\n";
+        Node* cur = head;
+        while (cur) {
+            file << cur->value;
+            if (cur->next) file << " ";
+            cur = cur->next;
+        }
+        file.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file >> newSize;
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file >> value;
+            addTail(value);
+        }
+        file.close();
+    }
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+        Node* cur = head;
+        while (cur) {
+            file.write(reinterpret_cast<const char*>(&cur->value), sizeof(T));
+            cur = cur->next;
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file.read(reinterpret_cast<char*>(&newSize), sizeof(newSize));
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file.read(reinterpret_cast<char*>(&value), sizeof(T));
+            addTail(value);
+        }
+        file.close();
+    }
+
 
  private:
     void swap(DL_list& other) noexcept {

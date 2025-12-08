@@ -2,21 +2,11 @@
 #pragma once
 #include <stdexcept>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 template <typename T>
 class SinglyLinkedList {
- private:
-    struct Node {
-        T value;
-        Node* next;
-        explicit Node(const T& v, Node* n = nullptr)
-            : value(v), next(n) {}
-    };
-
-    Node* head;
-    Node* tail;
-    int size;
-
  public:
     SinglyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
@@ -141,4 +131,89 @@ class SinglyLinkedList {
         }
         std::cout << "nullptr\n";
     }
+
+    // текстовый формат
+    void saveText(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file << size << "\n";
+        Node* cur = head;
+        while (cur) {
+            file << cur->value;
+            if (cur->next) file << " ";
+            cur = cur->next;
+        }
+        file.close();
+    }
+
+    void loadText(const std::string& filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file >> newSize;
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file >> value;
+            pushBack(value);
+        }
+        file.close();
+    }
+
+    // бинарный формат
+    void saveBinary(const std::string& filename) const {
+        std::ofstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for writing");
+        }
+
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+        Node* cur = head;
+        while (cur) {
+            file.write(reinterpret_cast<const char*>(&cur->value), sizeof(T));
+            cur = cur->next;
+        }
+        file.close();
+    }
+
+    void loadBinary(const std::string& filename) {
+        std::ifstream file(filename, std::ios::binary);
+        if (!file.is_open()) {
+            throw std::runtime_error("Cannot open file for reading");
+        }
+
+        clear();
+
+        int newSize;
+        file.read(reinterpret_cast<char*>(&newSize), sizeof(newSize));
+
+        for (int i = 0; i < newSize; ++i) {
+            T value;
+            file.read(reinterpret_cast<char*>(&value), sizeof(T));
+            pushBack(value);
+        }
+        file.close();
+    }
+
+
+ private:
+    struct Node {
+        T value;
+        Node* next;
+        explicit Node(const T& v, Node* n = nullptr)
+            : value(v), next(n) {}
+    };
+
+    Node* head;
+    Node* tail;
+    int size;
 };

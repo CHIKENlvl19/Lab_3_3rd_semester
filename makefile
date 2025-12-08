@@ -66,7 +66,15 @@ coverage: clean all run
 
 	@echo "HTML report ready: $(COVERAGE_DIR)/index.html"
 
-clean:
-	rm -rf $(BUILD_DIR) $(COVERAGE_DIR) *.gcda *.gcno *.txt
+# Serialization test
+serialization: test_serialization.cpp
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) test_serialization.cpp -o $(BUILD_DIR)/test_serialization $(LDFLAGS)
 
-.PHONY: all run bench run_bench coverage clean
+run_serialization: serialization
+	$(BUILD_DIR)/test_serialization
+
+clean:
+	rm -rf $(BUILD_DIR) $(COVERAGE_DIR) *.gcda *.gcno test_*.txt *.bin
+
+.PHONY: all run bench run_bench coverage clean serialization run_serialization
