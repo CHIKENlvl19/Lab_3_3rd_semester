@@ -1,7 +1,8 @@
 // Copyright message
 #pragma once
-#include <stdexcept>
+
 #include <iostream>
+#include <stdexcept>
 #include "../include/myQueue_for_CBT.hpp"
 
 template <typename T>
@@ -18,6 +19,35 @@ class CompleteBinaryTree {
     Node* root;
     int size;
 
+    // вспомогательная функция: найти путь к узлу по индексу
+    // возвращает родителя и направление (true = right, false = left)
+    Node* findParent(int index, bool& goRight) {
+        if (index <= 1) return nullptr;
+
+        // путь через двоичное представление
+        int path = index;
+        int depth = 0;
+
+        // глубина (количество битов - 1)
+        while (path > 1) {
+            path >>= 1;
+            depth++;
+        }
+
+        // идем по дереву, используя биты как направления
+        Node* current = root;
+        for (int level = depth - 1; level > 0; --level) {
+            if (index & (1 << level)) {
+                current = current->right;
+            } else {
+                current = current->left;
+            }
+        }
+
+        goRight = (index & 1);  // последний бит определяет left/right
+        return current;
+    }
+
  public:
     CompleteBinaryTree() : root(nullptr), size(0) {}
 
@@ -31,17 +61,14 @@ class CompleteBinaryTree {
 
         root = new Node(other.root->value);
         size = other.size;
-
         CBTQueue<Node*> qOld;
         CBTQueue<Node*> qNew;
-
         qOld.push(other.root);
         qNew.push(root);
 
         while (!qOld.empty()) {
             Node* o = qOld.front();
             qOld.pop();
-
             Node* n = qNew.front();
             qNew.pop();
 
@@ -50,6 +77,7 @@ class CompleteBinaryTree {
                 qOld.push(o->left);
                 qNew.push(n->left);
             }
+
             if (o->right) {
                 n->right = new Node(o->right->value);
                 qOld.push(o->right);
@@ -64,24 +92,20 @@ class CompleteBinaryTree {
         }
 
         clear();
-
         if (!other.root) {
             return *this;
         }
 
         root = new Node(other.root->value);
         size = other.size;
-
         CBTQueue<Node*> qOld;
         CBTQueue<Node*> qNew;
-
         qOld.push(other.root);
         qNew.push(root);
 
         while (!qOld.empty()) {
             Node* o = qOld.front();
             qOld.pop();
-
             Node* n = qNew.front();
             qNew.pop();
 
@@ -90,6 +114,7 @@ class CompleteBinaryTree {
                 qOld.push(o->left);
                 qNew.push(n->left);
             }
+
             if (o->right) {
                 n->right = new Node(o->right->value);
                 qOld.push(o->right);
@@ -103,14 +128,11 @@ class CompleteBinaryTree {
  private:
     void clear() {
         if (!root) return;
-
         CBTQueue<Node*> q;
         q.push(root);
-
         while (!q.empty()) {
             Node* n = q.front();
             q.pop();
-
             if (n->left) {
                 q.push(n->left);
             }
@@ -119,7 +141,6 @@ class CompleteBinaryTree {
             }
             delete n;
         }
-
         root = nullptr;
         size = 0;
     }
@@ -138,6 +159,7 @@ class CompleteBinaryTree {
         return root->value;
     }
 
+    // O(log n)
     void insert(const T& value) {
         Node* newNode = new Node(value);
         size++;
@@ -147,31 +169,22 @@ class CompleteBinaryTree {
             return;
         }
 
-        CBTQueue<Node*> q;
-        q.push(root);
+        // находим родителя для нового узла
+        bool goRight;
+        Node* parent = findParent(size, goRight);
 
-        while (!q.empty()) {
-            Node* cur = q.front();
-            q.pop();
-
-            if (!cur->left) {
-                cur->left = newNode;
-                return;
-            }
-            if (!cur->right) {
-                cur->right = newNode;
-                return;
-            }
-
-            q.push(cur->left);
-            q.push(cur->right);
+        if (goRight) {
+            parent->right = newNode;
+        } else {
+            parent->left = newNode;
         }
     }
 
-
+    // O(log n)
     void removeLast() {
-        if (!root)
+        if (!root) {
             throw std::underflow_error("Tree is empty");
+        }
 
         if (size == 1) {
             delete root;
@@ -180,30 +193,12 @@ class CompleteBinaryTree {
             return;
         }
 
-        CBTQueue<Node*> q;
-        q.push(root);
+        // находим родителя последнего узла
+        bool goRight;
+        Node* parent = findParent(size, goRight);
 
-        Node* last = nullptr;
-        Node* parent = nullptr;
-
-        while (!q.empty()) {
-            Node* cur = q.front();
-            q.pop();
-
-            if (cur->left) {
-                parent = cur;
-                last = cur->left;
-                q.push(cur->left);
-            }
-            if (cur->right) {
-                parent = cur;
-                last = cur->right;
-                q.push(cur->right);
-            }
-        }
-
-        // удаляем последний элемент
-        if (parent->right == last) {
+        // удаляем последний узел
+        if (goRight) {
             delete parent->right;
             parent->right = nullptr;
         } else {
@@ -214,7 +209,6 @@ class CompleteBinaryTree {
         size--;
     }
 
-
     void printLevelOrder() const {
         if (!root) {
             std::cout << "[]" << std::endl;
@@ -223,9 +217,7 @@ class CompleteBinaryTree {
 
         CBTQueue<Node*> q;
         q.push(root);
-
         std::cout << "[";
-
         bool first = true;
 
         while (!q.empty()) {
@@ -236,7 +228,6 @@ class CompleteBinaryTree {
                 std::cout << ", ";
             }
             first = false;
-
             std::cout << n->value;
 
             if (n->left) {
@@ -246,7 +237,6 @@ class CompleteBinaryTree {
                 q.push(n->right);
             }
         }
-
         std::cout << "]" << std::endl;
     }
 };
