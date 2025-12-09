@@ -85,5 +85,12 @@
         "*.inc": "cpp",
         "regex": "cpp",
         "stack": "cpp"
-    }
+    },
+
+    "go.lintTool": "golangci-lint",
+    "go.lintOnSave": "workspace",
+    "go.lintFlags": [
+        "--path-mode=abs",
+        "--fast-only"
+    ]
 }
