@@ -1,0 +1,2055 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>datastructures: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">datastructures/array.go (95.1%)</option>
+				
+				<option value="file1">datastructures/cbt.go (96.8%)</option>
+				
+				<option value="file2">datastructures/dl_list.go (96.9%)</option>
+				
+				<option value="file3">datastructures/hashtable_chains.go (93.3%)</option>
+				
+				<option value="file4">datastructures/hashtable_oa.go (91.2%)</option>
+				
+				<option value="file5">datastructures/queue.go (91.9%)</option>
+				
+				<option value="file6">datastructures/sl_list.go (97.2%)</option>
+				
+				<option value="file7">datastructures/stack.go (95.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package datastructures
+
+import (
+        "bufio"
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+var (
+        ErrIndexOutOfRange = errors.New("index out of range")
+        ErrCannotOpenFile  = errors.New("cannot open file")
+)
+
+type MyArray struct {
+        data     []int
+        size     int
+        capacity int
+}
+
+func New(initialCapacity int) *MyArray <span class="cov8" title="1">{
+        if initialCapacity &lt;= 0 </span><span class="cov8" title="1">{
+                initialCapacity = 4
+        }</span>
+        <span class="cov8" title="1">return &amp;MyArray{
+                data:     make([]int, initialCapacity),
+                size:     0,
+                capacity: initialCapacity,
+        }</span>
+}
+
+func (a *MyArray) Size() int <span class="cov8" title="1">{
+        return a.size
+}</span>
+
+func (a *MyArray) Capacity() int <span class="cov8" title="1">{
+        return a.capacity
+}</span>
+
+func (a *MyArray) Get(index int) (int, error) <span class="cov8" title="1">{
+        if index &lt; 0 || index &gt;= a.size </span><span class="cov8" title="1">{
+                return 0, ErrIndexOutOfRange
+        }</span>
+        <span class="cov8" title="1">return a.data[index], nil</span>
+}
+
+func (a *MyArray) Set(index int, value int) error <span class="cov8" title="1">{
+        if index &lt; 0 || index &gt;= a.size </span><span class="cov8" title="1">{
+                return ErrIndexOutOfRange
+        }</span>
+        <span class="cov8" title="1">a.data[index] = value
+        return nil</span>
+}
+
+func (a *MyArray) PushBack(value int) <span class="cov8" title="1">{
+        if a.size &gt;= a.capacity </span><span class="cov8" title="1">{
+                newCapacity := a.capacity * 2
+                newData := make([]int, newCapacity)
+                copy(newData, a.data[:a.size])
+                a.data = newData
+                a.capacity = newCapacity
+        }</span>
+        <span class="cov8" title="1">a.data[a.size] = value
+        a.size++</span>
+}
+
+func (a *MyArray) Insert(index int, value int) error <span class="cov8" title="1">{
+        if index &lt; 0 || index &gt; a.size </span><span class="cov8" title="1">{
+                return ErrIndexOutOfRange
+        }</span>
+
+        <span class="cov8" title="1">if a.size &gt;= a.capacity </span><span class="cov8" title="1">{
+                newCapacity := a.capacity * 2
+                newData := make([]int, newCapacity)
+                copy(newData, a.data[:a.size])
+                a.data = newData
+                a.capacity = newCapacity
+        }</span>
+
+        // Shift elements
+        <span class="cov8" title="1">for i := a.size; i &gt; index; i-- </span><span class="cov8" title="1">{
+                a.data[i] = a.data[i-1]
+        }</span>
+        <span class="cov8" title="1">a.data[index] = value
+        a.size++
+        return nil</span>
+}
+
+func (a *MyArray) Remove(index int) error <span class="cov8" title="1">{
+        if index &lt; 0 || index &gt;= a.size </span><span class="cov8" title="1">{
+                return ErrIndexOutOfRange
+        }</span>
+
+        <span class="cov8" title="1">for i := index; i &lt; a.size-1; i++ </span><span class="cov8" title="1">{
+                a.data[i] = a.data[i+1]
+        }</span>
+        <span class="cov8" title="1">a.size--
+        return nil</span>
+}
+
+func (a *MyArray) Print() <span class="cov8" title="1">{
+        fmt.Print("[")
+        for i := 0; i &lt; a.size; i++ </span><span class="cov8" title="1">{
+                fmt.Print(a.data[i])
+                if i &lt; a.size-1 </span><span class="cov8" title="1">{
+                        fmt.Print(", ")
+                }</span>
+        }
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+// SaveText saves array to text format
+func (a *MyArray) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return ErrCannotOpenFile
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d %d\n", a.size, a.capacity)
+        for i := 0; i &lt; a.size; i++ </span><span class="cov8" title="1">{
+                fmt.Fprintf(file, "%d", a.data[i])
+                if i &lt; a.size-1 </span><span class="cov8" title="1">{
+                        fmt.Fprint(file, " ")
+                }</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads array from text format
+func (a *MyArray) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return ErrCannotOpenFile
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        scanner := bufio.NewScanner(file)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">parts := strings.Fields(scanner.Text())
+        if len(parts) &lt; 2 </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">size, _ := strconv.Atoi(parts[0])
+        capacity, _ := strconv.Atoi(parts[1])
+
+        a.size = size
+        a.capacity = capacity
+        a.data = make([]int, capacity)
+
+        if scanner.Scan() </span><span class="cov8" title="1">{
+                parts = strings.Fields(scanner.Text())
+                for i := 0; i &lt; size &amp;&amp; i &lt; len(parts); i++ </span><span class="cov8" title="1">{
+                        a.data[i], _ = strconv.Atoi(parts[i])
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves array to binary format
+func (a *MyArray) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return ErrCannotOpenFile
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(a.size))
+        binary.Write(file, binary.LittleEndian, int32(a.capacity))
+
+        for i := 0; i &lt; a.size; i++ </span><span class="cov8" title="1">{
+                binary.Write(file, binary.LittleEndian, int32(a.data[i]))
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads array from binary format
+func (a *MyArray) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return ErrCannotOpenFile
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        var size, capacity int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+        binary.Read(file, binary.LittleEndian, &amp;capacity)
+
+        a.size = int(size)
+        a.capacity = int(capacity)
+        a.data = make([]int, capacity)
+
+        for i := 0; i &lt; a.size; i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">a.data[i] = int(val)</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package datastructures
+
+import (
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type cbtNode struct {
+        value int
+        left  *cbtNode
+        right *cbtNode
+}
+
+type CompleteBinaryTree struct {
+        root *cbtNode
+        size int
+}
+
+func NewCompleteBinaryTree() *CompleteBinaryTree <span class="cov8" title="1">{
+        return &amp;CompleteBinaryTree{
+                root: nil,
+                size: 0,
+        }
+}</span>
+
+func (cbt *CompleteBinaryTree) Size() int <span class="cov8" title="1">{
+        return cbt.size
+}</span>
+
+func (cbt *CompleteBinaryTree) IsEmpty() bool <span class="cov8" title="1">{
+        return cbt.size == 0
+}</span>
+
+func (cbt *CompleteBinaryTree) GetRoot() (int, error) <span class="cov8" title="1">{
+        if cbt.root == nil </span><span class="cov8" title="1">{
+                return 0, errors.New("tree is empty")
+        }</span>
+        <span class="cov8" title="1">return cbt.root.value, nil</span>
+}
+
+// findParent находит родителя для узла по индексу
+func (cbt *CompleteBinaryTree) findParent(index int) (*cbtNode, bool) <span class="cov8" title="1">{
+        if index &lt;= 1 </span><span class="cov0" title="0">{
+                return nil, false
+        }</span>
+
+        <span class="cov8" title="1">path := index
+        depth := 0
+
+        for path &gt; 1 </span><span class="cov8" title="1">{
+                path &gt;&gt;= 1
+                depth++
+        }</span>
+
+        <span class="cov8" title="1">current := cbt.root
+        for level := depth - 1; level &gt; 0; level-- </span><span class="cov8" title="1">{
+                if index&amp;(1&lt;&lt;level) != 0 </span><span class="cov8" title="1">{
+                        current = current.right
+                }</span> else<span class="cov8" title="1"> {
+                        current = current.left
+                }</span>
+        }
+
+        <span class="cov8" title="1">goRight := (index &amp; 1) != 0
+        return current, goRight</span>
+}
+
+func (cbt *CompleteBinaryTree) Insert(value int) <span class="cov8" title="1">{
+        newNode := &amp;cbtNode{value: value, left: nil, right: nil}
+        cbt.size++
+
+        if cbt.root == nil </span><span class="cov8" title="1">{
+                cbt.root = newNode
+                return
+        }</span>
+
+        <span class="cov8" title="1">parent, goRight := cbt.findParent(cbt.size)
+
+        if goRight </span><span class="cov8" title="1">{
+                parent.right = newNode
+        }</span> else<span class="cov8" title="1"> {
+                parent.left = newNode
+        }</span>
+}
+
+func (cbt *CompleteBinaryTree) RemoveLast() error <span class="cov8" title="1">{
+        if cbt.root == nil </span><span class="cov8" title="1">{
+                return errors.New("tree is empty")
+        }</span>
+
+        <span class="cov8" title="1">if cbt.size == 1 </span><span class="cov8" title="1">{
+                cbt.root = nil
+                cbt.size = 0
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">parent, goRight := cbt.findParent(cbt.size)
+
+        if goRight </span><span class="cov8" title="1">{
+                parent.right = nil
+        }</span> else<span class="cov8" title="1"> {
+                parent.left = nil
+        }</span>
+
+        <span class="cov8" title="1">cbt.size--
+        return nil</span>
+}
+
+func (cbt *CompleteBinaryTree) Clear() <span class="cov8" title="1">{
+        cbt.root = nil
+        cbt.size = 0
+}</span>
+
+func (cbt *CompleteBinaryTree) PrintLevelOrder() <span class="cov8" title="1">{
+        if cbt.root == nil </span><span class="cov8" title="1">{
+                fmt.Println("[]")
+                return
+        }</span>
+
+        <span class="cov8" title="1">queue := []*cbtNode{cbt.root}
+        fmt.Print("[")
+        first := true
+
+        for len(queue) &gt; 0 </span><span class="cov8" title="1">{
+                node := queue[0]
+                queue = queue[1:]
+
+                if !first </span><span class="cov8" title="1">{
+                        fmt.Print(", ")
+                }</span>
+                <span class="cov8" title="1">first = false
+                fmt.Print(node.value)
+
+                if node.left != nil </span><span class="cov8" title="1">{
+                        queue = append(queue, node.left)
+                }</span>
+                <span class="cov8" title="1">if node.right != nil </span><span class="cov8" title="1">{
+                        queue = append(queue, node.right)
+                }</span>
+        }
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+// SaveText saves tree to text format
+func (cbt *CompleteBinaryTree) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d\n", cbt.size)
+
+        if cbt.root != nil </span><span class="cov8" title="1">{
+                queue := []*cbtNode{cbt.root}
+                first := true
+
+                for len(queue) &gt; 0 </span><span class="cov8" title="1">{
+                        node := queue[0]
+                        queue = queue[1:]
+
+                        if !first </span><span class="cov8" title="1">{
+                                fmt.Fprint(file, " ")
+                        }</span>
+                        <span class="cov8" title="1">first = false
+                        fmt.Fprintf(file, "%d", node.value)
+
+                        if node.left != nil </span><span class="cov8" title="1">{
+                                queue = append(queue, node.left)
+                        }</span>
+                        <span class="cov8" title="1">if node.right != nil </span><span class="cov8" title="1">{
+                                queue = append(queue, node.right)
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads tree from text format
+func (cbt *CompleteBinaryTree) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        cbt.Clear()
+
+        var size int
+        fmt.Fscanf(file, "%d\n", &amp;size)
+
+        if size &gt; 0 </span><span class="cov8" title="1">{
+                data, _ := io.ReadAll(file)
+                parts := strings.Fields(string(data))
+
+                for i := 0; i &lt; size &amp;&amp; i &lt; len(parts); i++ </span><span class="cov8" title="1">{
+                        val, _ := strconv.Atoi(parts[i])
+                        cbt.Insert(val)
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves tree to binary format
+func (cbt *CompleteBinaryTree) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(cbt.size))
+
+        if cbt.root != nil </span><span class="cov8" title="1">{
+                queue := []*cbtNode{cbt.root}
+
+                for len(queue) &gt; 0 </span><span class="cov8" title="1">{
+                        node := queue[0]
+                        queue = queue[1:]
+
+                        binary.Write(file, binary.LittleEndian, int32(node.value))
+
+                        if node.left != nil </span><span class="cov8" title="1">{
+                                queue = append(queue, node.left)
+                        }</span>
+                        <span class="cov8" title="1">if node.right != nil </span><span class="cov8" title="1">{
+                                queue = append(queue, node.right)
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads tree from binary format
+func (cbt *CompleteBinaryTree) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        cbt.Clear()
+
+        var size int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+
+        for i := 0; i &lt; int(size); i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">cbt.Insert(int(val))</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package datastructures
+
+import (
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type dlistNode struct {
+        value int
+        next  *dlistNode
+        prev  *dlistNode
+}
+
+type DoublyLinkedList struct {
+        head *dlistNode
+        tail *dlistNode
+        size int
+}
+
+func NewDoublyLinkedList() *DoublyLinkedList <span class="cov8" title="1">{
+        return &amp;DoublyLinkedList{
+                head: nil,
+                tail: nil,
+                size: 0,
+        }
+}</span>
+
+func (dl *DoublyLinkedList) Size() int <span class="cov8" title="1">{
+        return dl.size
+}</span>
+
+func (dl *DoublyLinkedList) IsEmpty() bool <span class="cov8" title="1">{
+        return dl.size == 0
+}</span>
+
+func (dl *DoublyLinkedList) AddHead(value int) <span class="cov8" title="1">{
+        newNode := &amp;dlistNode{value: value, next: dl.head, prev: nil}
+
+        if dl.head != nil </span><span class="cov8" title="1">{
+                dl.head.prev = newNode
+        }</span> else<span class="cov8" title="1"> {
+                dl.tail = newNode
+        }</span>
+
+        <span class="cov8" title="1">dl.head = newNode
+        dl.size++</span>
+}
+
+func (dl *DoublyLinkedList) AddTail(value int) <span class="cov8" title="1">{
+        newNode := &amp;dlistNode{value: value, next: nil, prev: dl.tail}
+
+        if dl.tail != nil </span><span class="cov8" title="1">{
+                dl.tail.next = newNode
+        }</span> else<span class="cov8" title="1"> {
+                dl.head = newNode
+        }</span>
+
+        <span class="cov8" title="1">dl.tail = newNode
+        dl.size++</span>
+}
+
+func (dl *DoublyLinkedList) AddAfter(index int, value int) error <span class="cov8" title="1">{
+        if index &lt; 0 || index &gt; dl.size </span><span class="cov8" title="1">{
+                return errors.New("index out of range")
+        }</span>
+
+        <span class="cov8" title="1">if index == dl.size </span><span class="cov8" title="1">{
+                dl.AddTail(value)
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">current := dl.head
+        for i := 0; i &lt; index; i++ </span><span class="cov8" title="1">{
+                current = current.next
+        }</span>
+
+        <span class="cov8" title="1">newNode := &amp;dlistNode{value: value, next: current.next, prev: current}
+
+        if current.next != nil </span><span class="cov8" title="1">{
+                current.next.prev = newNode
+        }</span> else<span class="cov0" title="0"> {
+                dl.tail = newNode
+        }</span>
+
+        <span class="cov8" title="1">current.next = newNode
+        dl.size++
+
+        return nil</span>
+}
+
+func (dl *DoublyLinkedList) RemoveByValue(value int) bool <span class="cov8" title="1">{
+        current := dl.head
+
+        for current != nil </span><span class="cov8" title="1">{
+                if current.value == value </span><span class="cov8" title="1">{
+                        if current.prev != nil </span><span class="cov8" title="1">{
+                                current.prev.next = current.next
+                        }</span> else<span class="cov8" title="1"> {
+                                dl.head = current.next
+                        }</span>
+
+                        <span class="cov8" title="1">if current.next != nil </span><span class="cov8" title="1">{
+                                current.next.prev = current.prev
+                        }</span> else<span class="cov8" title="1"> {
+                                dl.tail = current.prev
+                        }</span>
+
+                        <span class="cov8" title="1">dl.size--
+                        return true</span>
+                }
+                <span class="cov8" title="1">current = current.next</span>
+        }
+
+        <span class="cov8" title="1">return false</span>
+}
+
+func (dl *DoublyLinkedList) Search(value int) int <span class="cov8" title="1">{
+        current := dl.head
+        index := 0
+
+        for current != nil </span><span class="cov8" title="1">{
+                if current.value == value </span><span class="cov8" title="1">{
+                        return index
+                }</span>
+                <span class="cov8" title="1">current = current.next
+                index++</span>
+        }
+
+        <span class="cov8" title="1">return -1</span>
+}
+
+func (dl *DoublyLinkedList) Clear() <span class="cov8" title="1">{
+        dl.head = nil
+        dl.tail = nil
+        dl.size = 0
+}</span>
+
+func (dl *DoublyLinkedList) Print() <span class="cov8" title="1">{
+        if dl.head == nil </span><span class="cov8" title="1">{
+                fmt.Println("[]")
+                return
+        }</span>
+
+        <span class="cov8" title="1">fmt.Print("[")
+        current := dl.head
+        for current != nil </span><span class="cov8" title="1">{
+                fmt.Print(current.value)
+                if current.next != nil </span><span class="cov8" title="1">{
+                        fmt.Print(" &lt;-&gt; ")
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+func (dl *DoublyLinkedList) PrintBackwards() <span class="cov8" title="1">{
+        if dl.tail == nil </span><span class="cov8" title="1">{
+                fmt.Println("[]")
+                return
+        }</span>
+
+        <span class="cov8" title="1">fmt.Print("[")
+        current := dl.tail
+        for current != nil </span><span class="cov8" title="1">{
+                fmt.Print(current.value)
+                if current.prev != nil </span><span class="cov8" title="1">{
+                        fmt.Print(" &lt;-&gt; ")
+                }</span>
+                <span class="cov8" title="1">current = current.prev</span>
+        }
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+// SaveText saves list to text format
+func (dl *DoublyLinkedList) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d\n", dl.size)
+
+        current := dl.head
+        for current != nil </span><span class="cov8" title="1">{
+                fmt.Fprintf(file, "%d", current.value)
+                if current.next != nil </span><span class="cov8" title="1">{
+                        fmt.Fprint(file, " ")
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads list from text format
+func (dl *DoublyLinkedList) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        dl.Clear()
+
+        var size int
+        fmt.Fscanf(file, "%d\n", &amp;size)
+
+        if size &gt; 0 </span><span class="cov8" title="1">{
+                data, _ := io.ReadAll(file)
+                parts := strings.Fields(string(data))
+
+                for i := 0; i &lt; size &amp;&amp; i &lt; len(parts); i++ </span><span class="cov8" title="1">{
+                        val, _ := strconv.Atoi(parts[i])
+                        dl.AddTail(val)
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves list to binary format
+func (dl *DoublyLinkedList) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(dl.size))
+
+        current := dl.head
+        for current != nil </span><span class="cov8" title="1">{
+                binary.Write(file, binary.LittleEndian, int32(current.value))
+                current = current.next
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads list from binary format
+func (dl *DoublyLinkedList) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        dl.Clear()
+
+        var size int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+
+        for i := 0; i &lt; int(size); i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">dl.AddTail(int(val))</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package datastructures
+
+import (
+        "bufio"
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type chainNode struct {
+        key   int
+        value int
+        next  *chainNode
+}
+
+type HashTableChains struct {
+        buckets    []*chainNode
+        size       int
+        capacity   int
+        loadFactor float64
+        a, b, p    int
+}
+
+func NewHashTableChains(initialCapacity int) *HashTableChains <span class="cov8" title="1">{
+        if initialCapacity &lt;= 0 </span><span class="cov8" title="1">{
+                initialCapacity = 16
+        }</span>
+
+        <span class="cov8" title="1">return &amp;HashTableChains{
+                buckets:    make([]*chainNode, initialCapacity),
+                size:       0,
+                capacity:   initialCapacity,
+                loadFactor: 0.0,
+                a:          1,
+                b:          0,
+                p:          1000000007,
+        }</span>
+}
+
+func (ht *HashTableChains) hash(key int) int <span class="cov8" title="1">{
+        return ((ht.a*key + ht.b) % ht.p) % ht.capacity
+}</span>
+
+func (ht *HashTableChains) Size() int <span class="cov8" title="1">{
+        return ht.size
+}</span>
+
+func (ht *HashTableChains) Capacity() int <span class="cov8" title="1">{
+        return ht.capacity
+}</span>
+
+func (ht *HashTableChains) LoadFactor() float64 <span class="cov8" title="1">{
+        return ht.loadFactor
+}</span>
+
+func (ht *HashTableChains) resize() <span class="cov8" title="1">{
+        oldBuckets := ht.buckets
+        ht.capacity *= 2
+        ht.buckets = make([]*chainNode, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for _, head := range oldBuckets </span><span class="cov8" title="1">{
+                current := head
+                for current != nil </span><span class="cov8" title="1">{
+                        ht.Insert(current.key, current.value)
+                        current = current.next
+                }</span>
+        }
+}
+
+func (ht *HashTableChains) Insert(key int, value int) <span class="cov8" title="1">{
+        if ht.loadFactor &gt;= 0.75 </span><span class="cov8" title="1">{
+                ht.resize()
+        }</span>
+
+        <span class="cov8" title="1">index := ht.hash(key)
+        current := ht.buckets[index]
+
+        // Проверяем, существует ли ключ (обновление)
+        for current != nil </span><span class="cov8" title="1">{
+                if current.key == key </span><span class="cov8" title="1">{
+                        current.value = value
+                        return
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+
+        // Вставка нового узла в начало цепочки
+        <span class="cov8" title="1">newNode := &amp;chainNode{key: key, value: value, next: ht.buckets[index]}
+        ht.buckets[index] = newNode
+        ht.size++
+        ht.loadFactor = float64(ht.size) / float64(ht.capacity)</span>
+}
+
+func (ht *HashTableChains) Get(key int) (int, error) <span class="cov8" title="1">{
+        index := ht.hash(key)
+        current := ht.buckets[index]
+
+        for current != nil </span><span class="cov8" title="1">{
+                if current.key == key </span><span class="cov8" title="1">{
+                        return current.value, nil
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+
+        <span class="cov8" title="1">return 0, errors.New("key not found")</span>
+}
+
+func (ht *HashTableChains) Remove(key int) error <span class="cov8" title="1">{
+        index := ht.hash(key)
+        current := ht.buckets[index]
+        var prev *chainNode
+
+        for current != nil </span><span class="cov8" title="1">{
+                if current.key == key </span><span class="cov8" title="1">{
+                        if prev == nil </span><span class="cov8" title="1">{
+                                ht.buckets[index] = current.next
+                        }</span> else<span class="cov0" title="0"> {
+                                prev.next = current.next
+                        }</span>
+                        <span class="cov8" title="1">ht.size--
+                        ht.loadFactor = float64(ht.size) / float64(ht.capacity)
+                        return nil</span>
+                }
+                <span class="cov0" title="0">prev = current
+                current = current.next</span>
+        }
+
+        <span class="cov8" title="1">return errors.New("key not found")</span>
+}
+
+func (ht *HashTableChains) Contains(key int) bool <span class="cov8" title="1">{
+        _, err := ht.Get(key)
+        return err == nil
+}</span>
+
+func (ht *HashTableChains) Clear() <span class="cov8" title="1">{
+        ht.buckets = make([]*chainNode, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+}</span>
+
+func (ht *HashTableChains) Print() <span class="cov8" title="1">{
+        fmt.Println("HashTable (Chaining):")
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                if ht.buckets[i] != nil </span><span class="cov8" title="1">{
+                        fmt.Printf("  Bucket %d: ", i)
+                        current := ht.buckets[i]
+                        for current != nil </span><span class="cov8" title="1">{
+                                fmt.Printf("[%d-&gt;%d] ", current.key, current.value)
+                                current = current.next
+                        }</span>
+                        <span class="cov8" title="1">fmt.Println()</span>
+                }
+        }
+}
+
+// SaveText saves hash table to text format
+func (ht *HashTableChains) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d %d %d %d %d\n", ht.size, ht.capacity, ht.a, ht.b, ht.p)
+
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                current := ht.buckets[i]
+                for current != nil </span><span class="cov8" title="1">{
+                        fmt.Fprintf(file, "%d %d\n", current.key, current.value)
+                        current = current.next
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads hash table from text format
+func (ht *HashTableChains) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        scanner := bufio.NewScanner(file)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">parts := strings.Fields(scanner.Text())
+        if len(parts) &lt; 5 </span><span class="cov8" title="1">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">oldSize, _ := strconv.Atoi(parts[0])
+        ht.capacity, _ = strconv.Atoi(parts[1])
+        ht.a, _ = strconv.Atoi(parts[2])
+        ht.b, _ = strconv.Atoi(parts[3])
+        ht.p, _ = strconv.Atoi(parts[4])
+
+        ht.buckets = make([]*chainNode, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for i := 0; i &lt; oldSize; i++ </span><span class="cov8" title="1">{
+                if !scanner.Scan() </span><span class="cov8" title="1">{
+                        break</span>
+                }
+                <span class="cov8" title="1">parts = strings.Fields(scanner.Text())
+                if len(parts) &lt; 2 </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">key, _ := strconv.Atoi(parts[0])
+                value, _ := strconv.Atoi(parts[1])
+                ht.Insert(key, value)</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves hash table to binary format
+func (ht *HashTableChains) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(ht.size))
+        binary.Write(file, binary.LittleEndian, int32(ht.capacity))
+        binary.Write(file, binary.LittleEndian, int32(ht.a))
+        binary.Write(file, binary.LittleEndian, int32(ht.b))
+        binary.Write(file, binary.LittleEndian, int32(ht.p))
+
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                current := ht.buckets[i]
+                for current != nil </span><span class="cov8" title="1">{
+                        binary.Write(file, binary.LittleEndian, int32(current.key))
+                        binary.Write(file, binary.LittleEndian, int32(current.value))
+                        current = current.next
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads hash table from binary format
+func (ht *HashTableChains) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        var oldSize, capacity, a, b, p int32
+        binary.Read(file, binary.LittleEndian, &amp;oldSize)
+        binary.Read(file, binary.LittleEndian, &amp;capacity)
+        binary.Read(file, binary.LittleEndian, &amp;a)
+        binary.Read(file, binary.LittleEndian, &amp;b)
+        binary.Read(file, binary.LittleEndian, &amp;p)
+
+        ht.capacity = int(capacity)
+        ht.a = int(a)
+        ht.b = int(b)
+        ht.p = int(p)
+        ht.buckets = make([]*chainNode, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for i := 0; i &lt; int(oldSize); i++ </span><span class="cov8" title="1">{
+                var key, value int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;key); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">if err := binary.Read(file, binary.LittleEndian, &amp;value); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">ht.Insert(int(key), int(value))</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package datastructures
+
+import (
+        "bufio"
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+const (
+        CellEmpty    = 0
+        CellOccupied = 1
+        CellDeleted  = 2
+)
+
+type oaCell struct {
+        key   int
+        value int
+        state int
+}
+
+type HashTableOA struct {
+        table      []oaCell
+        size       int
+        capacity   int
+        loadFactor float64
+        a, b, p    int
+}
+
+func NewHashTableOA(initialCapacity int) *HashTableOA <span class="cov8" title="1">{
+        if initialCapacity &lt;= 0 </span><span class="cov8" title="1">{
+                initialCapacity = 16
+        }</span>
+
+        <span class="cov8" title="1">return &amp;HashTableOA{
+                table:      make([]oaCell, initialCapacity),
+                size:       0,
+                capacity:   initialCapacity,
+                loadFactor: 0.0,
+                a:          1,
+                b:          0,
+                p:          1000000007,
+        }</span>
+}
+
+func (ht *HashTableOA) hash(key int, attempt int) int <span class="cov8" title="1">{
+        h1 := ((ht.a*key + ht.b) % ht.p) % ht.capacity
+        h2 := 1 + (key % (ht.capacity - 1))
+        return (h1 + attempt*h2) % ht.capacity
+}</span>
+
+func (ht *HashTableOA) Size() int <span class="cov8" title="1">{
+        return ht.size
+}</span>
+
+func (ht *HashTableOA) Capacity() int <span class="cov8" title="1">{
+        return ht.capacity
+}</span>
+
+func (ht *HashTableOA) LoadFactor() float64 <span class="cov8" title="1">{
+        return ht.loadFactor
+}</span>
+
+func (ht *HashTableOA) resize() <span class="cov8" title="1">{
+        oldTable := ht.table
+        ht.capacity *= 2
+        ht.table = make([]oaCell, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for i := range oldTable </span><span class="cov8" title="1">{
+                if oldTable[i].state == CellOccupied </span><span class="cov8" title="1">{
+                        ht.Insert(oldTable[i].key, oldTable[i].value)
+                }</span>
+        }
+}
+
+func (ht *HashTableOA) Insert(key int, value int) <span class="cov8" title="1">{
+        if ht.loadFactor &gt;= 0.7 </span><span class="cov8" title="1">{
+                ht.resize()
+        }</span>
+
+        <span class="cov8" title="1">for attempt := 0; attempt &lt; ht.capacity; attempt++ </span><span class="cov8" title="1">{
+                index := ht.hash(key, attempt)
+
+                if ht.table[index].state == CellEmpty || ht.table[index].state == CellDeleted </span><span class="cov8" title="1">{
+                        ht.table[index].key = key
+                        ht.table[index].value = value
+                        ht.table[index].state = CellOccupied
+                        ht.size++
+                        ht.loadFactor = float64(ht.size) / float64(ht.capacity)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">if ht.table[index].state == CellOccupied &amp;&amp; ht.table[index].key == key </span><span class="cov8" title="1">{
+                        ht.table[index].value = value
+                        return
+                }</span>
+        }
+}
+
+func (ht *HashTableOA) Get(key int) (int, error) <span class="cov8" title="1">{
+        for attempt := 0; attempt &lt; ht.capacity; attempt++ </span><span class="cov8" title="1">{
+                index := ht.hash(key, attempt)
+
+                if ht.table[index].state == CellEmpty </span><span class="cov8" title="1">{
+                        return 0, errors.New("key not found")
+                }</span>
+
+                <span class="cov8" title="1">if ht.table[index].state == CellOccupied &amp;&amp; ht.table[index].key == key </span><span class="cov8" title="1">{
+                        return ht.table[index].value, nil
+                }</span>
+        }
+
+        <span class="cov0" title="0">return 0, errors.New("key not found")</span>
+}
+
+func (ht *HashTableOA) Remove(key int) error <span class="cov8" title="1">{
+        for attempt := 0; attempt &lt; ht.capacity; attempt++ </span><span class="cov8" title="1">{
+                index := ht.hash(key, attempt)
+
+                if ht.table[index].state == CellEmpty </span><span class="cov8" title="1">{
+                        return errors.New("key not found")
+                }</span>
+
+                <span class="cov8" title="1">if ht.table[index].state == CellOccupied &amp;&amp; ht.table[index].key == key </span><span class="cov8" title="1">{
+                        ht.table[index].state = CellDeleted
+                        ht.size--
+                        ht.loadFactor = float64(ht.size) / float64(ht.capacity)
+                        return nil
+                }</span>
+        }
+
+        <span class="cov0" title="0">return errors.New("key not found")</span>
+}
+
+func (ht *HashTableOA) Contains(key int) bool <span class="cov8" title="1">{
+        _, err := ht.Get(key)
+        return err == nil
+}</span>
+
+func (ht *HashTableOA) Clear() <span class="cov8" title="1">{
+        ht.table = make([]oaCell, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+}</span>
+
+func (ht *HashTableOA) Print() <span class="cov8" title="1">{
+        fmt.Println("HashTable (Open Addressing):")
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                if ht.table[i].state == CellOccupied </span><span class="cov8" title="1">{
+                        fmt.Printf("  [%d]: %d -&gt; %d\n", i, ht.table[i].key, ht.table[i].value)
+                }</span>
+        }
+}
+
+// SaveText saves hash table to text format
+func (ht *HashTableOA) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d %d %d %d %d\n", ht.size, ht.capacity, ht.a, ht.b, ht.p)
+
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                if ht.table[i].state == CellOccupied </span><span class="cov8" title="1">{
+                        fmt.Fprintf(file, "%d %d\n", ht.table[i].key, ht.table[i].value)
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads hash table from text format
+func (ht *HashTableOA) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        scanner := bufio.NewScanner(file)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">parts := strings.Fields(scanner.Text())
+        if len(parts) &lt; 5 </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">oldSize, _ := strconv.Atoi(parts[0])
+        ht.capacity, _ = strconv.Atoi(parts[1])
+        ht.a, _ = strconv.Atoi(parts[2])
+        ht.b, _ = strconv.Atoi(parts[3])
+        ht.p, _ = strconv.Atoi(parts[4])
+
+        ht.table = make([]oaCell, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for i := 0; i &lt; oldSize; i++ </span><span class="cov8" title="1">{
+                if !scanner.Scan() </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov8" title="1">parts = strings.Fields(scanner.Text())
+                if len(parts) &lt; 2 </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">key, _ := strconv.Atoi(parts[0])
+                value, _ := strconv.Atoi(parts[1])
+                ht.Insert(key, value)</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves hash table to binary format
+func (ht *HashTableOA) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(ht.size))
+        binary.Write(file, binary.LittleEndian, int32(ht.capacity))
+        binary.Write(file, binary.LittleEndian, int32(ht.a))
+        binary.Write(file, binary.LittleEndian, int32(ht.b))
+        binary.Write(file, binary.LittleEndian, int32(ht.p))
+
+        for i := 0; i &lt; ht.capacity; i++ </span><span class="cov8" title="1">{
+                if ht.table[i].state == CellOccupied </span><span class="cov8" title="1">{
+                        binary.Write(file, binary.LittleEndian, int32(ht.table[i].key))
+                        binary.Write(file, binary.LittleEndian, int32(ht.table[i].value))
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads hash table from binary format
+func (ht *HashTableOA) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        var oldSize, capacity, a, b, p int32
+        binary.Read(file, binary.LittleEndian, &amp;oldSize)
+        binary.Read(file, binary.LittleEndian, &amp;capacity)
+        binary.Read(file, binary.LittleEndian, &amp;a)
+        binary.Read(file, binary.LittleEndian, &amp;b)
+        binary.Read(file, binary.LittleEndian, &amp;p)
+
+        ht.capacity = int(capacity)
+        ht.a = int(a)
+        ht.b = int(b)
+        ht.p = int(p)
+        ht.table = make([]oaCell, ht.capacity)
+        ht.size = 0
+        ht.loadFactor = 0.0
+
+        for i := 0; i &lt; int(oldSize); i++ </span><span class="cov8" title="1">{
+                var key, value int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;key); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">if err := binary.Read(file, binary.LittleEndian, &amp;value); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">ht.Insert(int(key), int(value))</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package datastructures
+
+import (
+        "bufio"
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type MyQueue struct {
+        data []int
+        head int
+}
+
+func NewQueue(initialCapacity int) *MyQueue <span class="cov8" title="1">{
+        if initialCapacity &lt;= 0 </span><span class="cov8" title="1">{
+                initialCapacity = 4
+        }</span>
+        <span class="cov8" title="1">return &amp;MyQueue{
+                data: make([]int, 0, initialCapacity),
+                head: 0,
+        }</span>
+}
+
+func (q *MyQueue) Size() int <span class="cov8" title="1">{
+        return len(q.data) - q.head
+}</span>
+
+func (q *MyQueue) Capacity() int <span class="cov8" title="1">{
+        return cap(q.data)
+}</span>
+
+func (q *MyQueue) IsEmpty() bool <span class="cov8" title="1">{
+        return len(q.data) == q.head
+}</span>
+
+func (q *MyQueue) Push(value int) <span class="cov8" title="1">{
+        q.data = append(q.data, value)
+}</span>
+
+func (q *MyQueue) Pop() error <span class="cov8" title="1">{
+        if q.IsEmpty() </span><span class="cov8" title="1">{
+                return errors.New("queue is empty")
+        }</span>
+
+        <span class="cov8" title="1">q.head++
+
+        // Оптимизация: если queue стал слишком разреженным, пересоздаем
+        if q.head &gt; len(q.data)/2 &amp;&amp; q.head &gt; 10 </span><span class="cov8" title="1">{
+                q.compact()
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (q *MyQueue) Front() (int, error) <span class="cov8" title="1">{
+        if q.IsEmpty() </span><span class="cov8" title="1">{
+                return 0, errors.New("queue is empty")
+        }</span>
+        <span class="cov8" title="1">return q.data[q.head], nil</span>
+}
+
+// compact уплотняет данные, удаляя пустое пространство в начале
+func (q *MyQueue) compact() <span class="cov8" title="1">{
+        newData := make([]int, 0, cap(q.data))
+        newData = append(newData, q.data[q.head:]...)
+        q.data = newData
+        q.head = 0
+}</span>
+
+func (q *MyQueue) Clear() <span class="cov0" title="0">{
+        q.data = q.data[:0]
+        q.head = 0
+}</span>
+
+func (q *MyQueue) Print() <span class="cov8" title="1">{
+        if q.IsEmpty() </span><span class="cov8" title="1">{
+                fmt.Println("Queue is empty!")
+                return
+        }</span>
+        <span class="cov8" title="1">fmt.Print("[ ")
+        for i := q.head; i &lt; len(q.data); i++ </span><span class="cov8" title="1">{
+                fmt.Print(q.data[i], " ")
+        }</span>
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+// SaveText saves queue to text format
+func (q *MyQueue) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        size := q.Size()
+        fmt.Fprintf(file, "%d %d\n", size, cap(q.data))
+
+        for i := q.head; i &lt; len(q.data); i++ </span><span class="cov8" title="1">{
+                fmt.Fprintf(file, "%d", q.data[i])
+                if i &lt; len(q.data)-1 </span><span class="cov8" title="1">{
+                        fmt.Fprint(file, " ")
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads queue from text format
+func (q *MyQueue) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        scanner := bufio.NewScanner(file)
+        if !scanner.Scan() </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">parts := strings.Fields(scanner.Text())
+        if len(parts) &lt; 2 </span><span class="cov0" title="0">{
+                return errors.New("invalid file format")
+        }</span>
+
+        <span class="cov8" title="1">size, _ := strconv.Atoi(parts[0])
+        capacity, _ := strconv.Atoi(parts[1])
+
+        q.data = make([]int, size, capacity)
+        q.head = 0
+
+        if scanner.Scan() </span><span class="cov8" title="1">{
+                parts = strings.Fields(scanner.Text())
+                for i := 0; i &lt; size &amp;&amp; i &lt; len(parts); i++ </span><span class="cov8" title="1">{
+                        q.data[i], _ = strconv.Atoi(parts[i])
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves queue to binary format
+func (q *MyQueue) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        size := q.Size()
+        binary.Write(file, binary.LittleEndian, int32(size))
+        binary.Write(file, binary.LittleEndian, int32(cap(q.data)))
+
+        for i := q.head; i &lt; len(q.data); i++ </span><span class="cov8" title="1">{
+                binary.Write(file, binary.LittleEndian, int32(q.data[i]))
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads queue from binary format
+func (q *MyQueue) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        var size, capacity int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+        binary.Read(file, binary.LittleEndian, &amp;capacity)
+
+        q.data = make([]int, size, capacity)
+        q.head = 0
+
+        for i := 0; i &lt; int(size); i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">q.data[i] = int(val)</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package datastructures
+
+import (
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type slistNode struct {
+        value int
+        next  *slistNode
+}
+
+type SinglyLinkedList struct {
+        head *slistNode
+        tail *slistNode
+        size int
+}
+
+func NewSinglyLinkedList() *SinglyLinkedList <span class="cov8" title="1">{
+        return &amp;SinglyLinkedList{
+                head: nil,
+                tail: nil,
+                size: 0,
+        }
+}</span>
+
+func (sl *SinglyLinkedList) Size() int <span class="cov8" title="1">{
+        return sl.size
+}</span>
+
+func (sl *SinglyLinkedList) IsEmpty() bool <span class="cov8" title="1">{
+        return sl.size == 0
+}</span>
+
+func (sl *SinglyLinkedList) AddHead(value int) <span class="cov8" title="1">{
+        newNode := &amp;slistNode{value: value, next: sl.head}
+        sl.head = newNode
+        
+        if sl.tail == nil </span><span class="cov8" title="1">{
+                sl.tail = newNode
+        }</span>
+        
+        <span class="cov8" title="1">sl.size++</span>
+}
+
+func (sl *SinglyLinkedList) AddTail(value int) <span class="cov8" title="1">{
+        newNode := &amp;slistNode{value: value, next: nil}
+        
+        if sl.tail != nil </span><span class="cov8" title="1">{
+                sl.tail.next = newNode
+        }</span> else<span class="cov8" title="1"> {
+                sl.head = newNode
+        }</span>
+        
+        <span class="cov8" title="1">sl.tail = newNode
+        sl.size++</span>
+}
+
+func (sl *SinglyLinkedList) RemoveHead() error <span class="cov8" title="1">{
+        if sl.head == nil </span><span class="cov8" title="1">{
+                return errors.New("list is empty")
+        }</span>
+        
+        <span class="cov8" title="1">sl.head = sl.head.next
+        sl.size--
+        
+        if sl.head == nil </span><span class="cov8" title="1">{
+                sl.tail = nil
+        }</span>
+        
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (sl *SinglyLinkedList) RemoveTail() error <span class="cov8" title="1">{
+        if sl.head == nil </span><span class="cov8" title="1">{
+                return errors.New("list is empty")
+        }</span>
+        
+        <span class="cov8" title="1">if sl.head == sl.tail </span><span class="cov8" title="1">{
+                sl.head = nil
+                sl.tail = nil
+                sl.size = 0
+                return nil
+        }</span>
+        
+        // Находим предпоследний узел
+        <span class="cov8" title="1">current := sl.head
+        for current.next != sl.tail </span><span class="cov8" title="1">{
+                current = current.next
+        }</span>
+        
+        <span class="cov8" title="1">current.next = nil
+        sl.tail = current
+        sl.size--
+        
+        return nil</span>
+}
+
+func (sl *SinglyLinkedList) Search(value int) int <span class="cov8" title="1">{
+        current := sl.head
+        index := 0
+        
+        for current != nil </span><span class="cov8" title="1">{
+                if current.value == value </span><span class="cov8" title="1">{
+                        return index
+                }</span>
+                <span class="cov8" title="1">current = current.next
+                index++</span>
+        }
+        
+        <span class="cov8" title="1">return -1</span>
+}
+
+func (sl *SinglyLinkedList) Clear() <span class="cov8" title="1">{
+        sl.head = nil
+        sl.tail = nil
+        sl.size = 0
+}</span>
+
+func (sl *SinglyLinkedList) Print() <span class="cov8" title="1">{
+        if sl.head == nil </span><span class="cov8" title="1">{
+                fmt.Println("[]")
+                return
+        }</span>
+        
+        <span class="cov8" title="1">fmt.Print("[")
+        current := sl.head
+        for current != nil </span><span class="cov8" title="1">{
+                fmt.Print(current.value)
+                if current.next != nil </span><span class="cov8" title="1">{
+                        fmt.Print(" -&gt; ")
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+        <span class="cov8" title="1">fmt.Println("]")</span>
+}
+
+// SaveText saves list to text format
+func (sl *SinglyLinkedList) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+        
+        fmt.Fprintf(file, "%d\n", sl.size)
+        
+        current := sl.head
+        for current != nil </span><span class="cov8" title="1">{
+                fmt.Fprintf(file, "%d", current.value)
+                if current.next != nil </span><span class="cov8" title="1">{
+                        fmt.Fprint(file, " ")
+                }</span>
+                <span class="cov8" title="1">current = current.next</span>
+        }
+        
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads list from text format
+func (sl *SinglyLinkedList) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+        
+        sl.Clear()
+        
+        var size int
+        fmt.Fscanf(file, "%d\n", &amp;size)
+        
+        if size &gt; 0 </span><span class="cov8" title="1">{
+                data, _ := io.ReadAll(file)
+                parts := strings.Fields(string(data))
+                
+                for i := 0; i &lt; size &amp;&amp; i &lt; len(parts); i++ </span><span class="cov8" title="1">{
+                        val, _ := strconv.Atoi(parts[i])
+                        sl.AddTail(val)
+                }</span>
+        }
+        
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SaveBinary saves list to binary format
+func (sl *SinglyLinkedList) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+        
+        binary.Write(file, binary.LittleEndian, int32(sl.size))
+        
+        current := sl.head
+        for current != nil </span><span class="cov8" title="1">{
+                binary.Write(file, binary.LittleEndian, int32(current.value))
+                current = current.next
+        }</span>
+        
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads list from binary format
+func (sl *SinglyLinkedList) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+        
+        sl.Clear()
+        
+        var size int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+        
+        for i := 0; i &lt; int(size); i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">sl.AddTail(int(val))</span>
+        }
+        
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package datastructures
+
+import (
+        "encoding/binary"
+        "errors"
+        "fmt"
+        "io"
+        "os"
+)
+
+const MaxStackSize = 1000000
+
+type MyStack struct {
+        data []int
+        size int
+}
+
+func NewStack() *MyStack <span class="cov8" title="1">{
+        return &amp;MyStack{
+                data: make([]int, 0, 16), // Начальная capacity 16
+                size: 0,
+        }
+}</span>
+
+func (s *MyStack) Size() int <span class="cov8" title="1">{
+        return s.size
+}</span>
+
+func (s *MyStack) IsEmpty() bool <span class="cov8" title="1">{
+        return s.size == 0
+}</span>
+
+func (s *MyStack) Push(value int) error <span class="cov8" title="1">{
+        if s.size &gt;= MaxStackSize </span><span class="cov8" title="1">{
+                return errors.New("stack overflow")
+        }</span>
+        <span class="cov8" title="1">s.data = append(s.data, value)
+        s.size++
+        return nil</span>
+}
+
+func (s *MyStack) Pop() error <span class="cov8" title="1">{
+        if s.size == 0 </span><span class="cov8" title="1">{
+                return errors.New("stack is empty")
+        }</span>
+        <span class="cov8" title="1">s.data = s.data[:s.size-1]
+        s.size--
+        return nil</span>
+}
+
+func (s *MyStack) Peek() (int, error) <span class="cov8" title="1">{
+        if s.size == 0 </span><span class="cov8" title="1">{
+                return 0, errors.New("stack is empty")
+        }</span>
+        <span class="cov8" title="1">return s.data[s.size-1], nil</span>
+}
+
+func (s *MyStack) Clear() <span class="cov8" title="1">{
+        s.data = s.data[:0]
+        s.size = 0
+}</span>
+
+func (s *MyStack) Print() <span class="cov8" title="1">{
+        if s.size == 0 </span><span class="cov8" title="1">{
+                fmt.Println("Stack is empty!")
+                return
+        }</span>
+        <span class="cov8" title="1">fmt.Print("nil")
+        for i := s.size - 1; i &gt;= 0; i-- </span><span class="cov8" title="1">{
+                fmt.Printf(" &lt;- %d", s.data[i])
+        }</span>
+        <span class="cov8" title="1">fmt.Println()</span>
+}
+
+// SaveText saves stack to text format
+func (s *MyStack) SaveText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        fmt.Fprintf(file, "%d\n", s.size)
+
+        for i := 0; i &lt; s.size; i++ </span><span class="cov8" title="1">{
+                fmt.Fprintf(file, "%d", s.data[i])
+                if i &lt; s.size-1 </span><span class="cov8" title="1">{
+                        fmt.Fprint(file, " ")
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadText loads stack from text format
+func (s *MyStack) LoadText(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        s.Clear()
+
+        var size int
+        fmt.Fscanf(file, "%d\n", &amp;size)
+
+        s.data = make([]int, size)
+        for i := 0; i &lt; size; i++ </span><span class="cov8" title="1">{
+                fmt.Fscanf(file, "%d", &amp;s.data[i])
+        }</span>
+        <span class="cov8" title="1">s.size = size
+
+        return nil</span>
+}
+
+// SaveBinary saves stack to binary format
+func (s *MyStack) SaveBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Create(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for writing")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        binary.Write(file, binary.LittleEndian, int32(s.size))
+
+        for i := 0; i &lt; s.size; i++ </span><span class="cov8" title="1">{
+                binary.Write(file, binary.LittleEndian, int32(s.data[i]))
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// LoadBinary loads stack from binary format
+func (s *MyStack) LoadBinary(filename string) error <span class="cov8" title="1">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov8" title="1">{
+                return errors.New("cannot open file for reading")
+        }</span>
+        <span class="cov8" title="1">defer file.Close()
+
+        var size int32
+        binary.Read(file, binary.LittleEndian, &amp;size)
+
+        s.data = make([]int, size)
+        for i := 0; i &lt; int(size); i++ </span><span class="cov8" title="1">{
+                var val int32
+                if err := binary.Read(file, binary.LittleEndian, &amp;val); err != nil </span><span class="cov0" title="0">{
+                        if err == io.EOF </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">s.data[i] = int(val)</span>
+        }
+        <span class="cov8" title="1">s.size = int(size)
+
+        return nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
