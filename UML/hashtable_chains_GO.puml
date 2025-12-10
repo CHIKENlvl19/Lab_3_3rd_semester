@@ -1,0 +1,34 @@
+@startuml HashTableChains_Go
+class chainNode {
+  + key: int
+  + value: int
+  + next: *chainNode
+}
+
+class HashTableChains {
+  - buckets: []*chainNode
+  - size: int
+  - capacity: int
+  - loadFactor: float64
+  - a, b, p: int
+  
+  + NewHashTableChains(initialCapacity: int): *HashTableChains
+  + Size(): int
+  + Capacity(): int
+  + LoadFactor(): float64
+  + Insert(key: int, value: int): void
+  + Get(key: int): (int, error)
+  + Remove(key: int): error
+  + Contains(key: int): bool
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+  - hash(key: int): int
+  - resize(): void
+}
+
+HashTableChains *-- chainNode
+@enduml

@@ -17,62 +17,73 @@ HashTable (Open Addressing):
   [10]: 10 -> 100
 Queue is empty!
 [ 10 20 ]
+[]
+[10 -> 20 -> 30]
 Stack is empty!
 nil <- 20 <- 10
 goos: linux
 goarch: amd64
 pkg: datastructures
 cpu: AMD Ryzen 5 6600H with Radeon Graphics         
-BenchmarkPushBack-12                     	494334927	         4.258 ns/op	      17 B/op	       0 allocs/op
-BenchmarkInsertMiddle-12                 	  455184	    108300 ns/op	      17 B/op	       0 allocs/op
-BenchmarkGet-12                          	1000000000	         0.9203 ns/op	       0 B/op	       0 allocs/op
-BenchmarkSaveText-12                     	      92	  11016402 ns/op	    6114 B/op	     749 allocs/op
-BenchmarkLoadText-12                     	   54250	     21780 ns/op	   32936 B/op	       9 allocs/op
-BenchmarkSaveBinary-12                   	     222	   5458952 ns/op	    4128 B/op	    1005 allocs/op
-BenchmarkLoadBinary-12                   	    1480	    815685 ns/op	   12320 B/op	    1006 allocs/op
-BenchmarkCBTInsert-12                    	20066826	        55.60 ns/op	      24 B/op	       1 allocs/op
-BenchmarkCBTRemoveLast-12                	31893228	        39.45 ns/op	       0 B/op	       0 allocs/op
-BenchmarkCBTInsertRemove-12              	16832036	        74.24 ns/op	      24 B/op	       1 allocs/op
-BenchmarkCBTSaveText-12                  	      97	  10921547 ns/op	   27545 B/op	     762 allocs/op
-BenchmarkCBTLoadText-12                  	   16341	     70329 ns/op	   56725 B/op	    1014 allocs/op
-BenchmarkCBTSaveBinary-12                	     217	   5424245 ns/op	   25564 B/op	    1018 allocs/op
-BenchmarkCBTLoadBinary-12                	    1354	    885625 ns/op	   28124 B/op	    2004 allocs/op
-BenchmarkDListAddHead-12                 	40155015	        28.06 ns/op	      24 B/op	       1 allocs/op
-BenchmarkDListAddTail-12                 	48420817	        27.46 ns/op	      24 B/op	       1 allocs/op
-BenchmarkDListSearch-12                  	 2618842	       453.7 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDListRemoveByValue-12           	 2059743	       580.7 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDListSaveText-12                	     100	  10781613 ns/op	    6104 B/op	     748 allocs/op
-BenchmarkDListLoadText-12                	   22629	     52271 ns/op	   56725 B/op	    1014 allocs/op
-BenchmarkHashTableChainsInsert-12        	14054450	        82.16 ns/op	     105 B/op	       2 allocs/op
-BenchmarkHashTableChainsGet-12           	378760611	         3.177 ns/op	       0 B/op	       0 allocs/op
-BenchmarkHashTableChainsRemove-12        	38126091	        30.68 ns/op	      24 B/op	       1 allocs/op
-BenchmarkHashTableChainsContains-12      	375627595	         3.208 ns/op	       0 B/op	       0 allocs/op
-BenchmarkHashTableChainsSaveText-12      	     204	   5816644 ns/op	   13907 B/op	    1724 allocs/op
-BenchmarkHashTableChainsLoadText-12      	   10000	    117451 ns/op	   84800 B/op	    3008 allocs/op
-BenchmarkHashTableChainsSaveBinary-12    	     100	  11104133 ns/op	    8148 B/op	    2008 allocs/op
-BenchmarkHashTableChainsLoadBinary-12    	     727	   1679891 ns/op	   48660 B/op	    3010 allocs/op
-BenchmarkHashTableOAInsert-12            	34274569	        32.62 ns/op	      93 B/op	       0 allocs/op
-BenchmarkHashTableOAGet-12               	188844104	         6.393 ns/op	       0 B/op	       0 allocs/op
-BenchmarkHashTableOARemove-12            	78961731	        15.33 ns/op	       0 B/op	       0 allocs/op
-BenchmarkHashTableOAContains-12          	187649799	         6.397 ns/op	       0 B/op	       0 allocs/op
-BenchmarkHashTableOASaveText-12          	     206	   5701104 ns/op	   13898 B/op	    1724 allocs/op
-BenchmarkHashTableOALoadText-12          	   13868	     88197 ns/op	   93816 B/op	    2008 allocs/op
-BenchmarkHashTableOASaveBinary-12        	     100	  10775003 ns/op	    8140 B/op	    2008 allocs/op
-BenchmarkHashTableOALoadBinary-12        	     715	   1610746 ns/op	   57676 B/op	    2010 allocs/op
-BenchmarkQueuePush-12                    	240219351	        11.85 ns/op	      46 B/op	       0 allocs/op
-BenchmarkQueuePop-12                     	88238648	        15.49 ns/op	     184 B/op	       0 allocs/op
-BenchmarkQueueSaveText-12                	     100	  10494325 ns/op	    6108 B/op	     749 allocs/op
-BenchmarkQueueLoadText-12                	   52497	     22639 ns/op	   32936 B/op	       9 allocs/op
-BenchmarkQueueSaveBinary-12              	     219	   5451997 ns/op	    4128 B/op	    1005 allocs/op
-BenchmarkQueueLoadBinary-12              	    1516	    784334 ns/op	   12320 B/op	    1006 allocs/op
-BenchmarkStackPush-12                    	1000000000	         0.2382 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStackPop-12                     	1000000000	         0.2382 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStackPeek-12                    	1000000000	         0.4730 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStackPushPop-12                 	958978648	         1.242 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStackSaveText-12                	     100	  10832753 ns/op	    6106 B/op	     748 allocs/op
-BenchmarkStackLoadText-12                	     344	   3601864 ns/op	   59592 B/op	    1998 allocs/op
-BenchmarkStackSaveBinary-12              	     223	   5360325 ns/op	    4124 B/op	    1004 allocs/op
-BenchmarkStackLoadBinary-12              	    1521	    797931 ns/op	   12316 B/op	    1005 allocs/op
-BenchmarkStackClear-12                   	 1381572	       772.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPushBack-12                     	478884337	         2.717 ns/op	      17 B/op	       0 allocs/op
+BenchmarkInsertMiddle-12                 	  485322	    112351 ns/op	      16 B/op	       0 allocs/op
+BenchmarkGet-12                          	1000000000	         0.8862 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSaveText-12                     	     100	  10362292 ns/op	    6108 B/op	     749 allocs/op
+BenchmarkLoadText-12                     	   54434	     21346 ns/op	   32936 B/op	       9 allocs/op
+BenchmarkSaveBinary-12                   	     228	   5297852 ns/op	    4128 B/op	    1005 allocs/op
+BenchmarkLoadBinary-12                   	    1549	    768182 ns/op	   12320 B/op	    1006 allocs/op
+BenchmarkCBTInsert-12                    	22830354	        53.29 ns/op	      24 B/op	       1 allocs/op
+BenchmarkCBTRemoveLast-12                	33753452	        37.11 ns/op	       0 B/op	       0 allocs/op
+BenchmarkCBTInsertRemove-12              	18077662	        69.64 ns/op	      24 B/op	       1 allocs/op
+BenchmarkCBTSaveText-12                  	     100	  10301636 ns/op	   27546 B/op	     762 allocs/op
+BenchmarkCBTLoadText-12                  	   17948	     67706 ns/op	   56725 B/op	    1014 allocs/op
+BenchmarkCBTSaveBinary-12                	     242	   5096509 ns/op	   25564 B/op	    1018 allocs/op
+BenchmarkCBTLoadBinary-12                	    1428	    844793 ns/op	   28124 B/op	    2004 allocs/op
+BenchmarkDListAddHead-12                 	46151422	        26.28 ns/op	      24 B/op	       1 allocs/op
+BenchmarkDListAddTail-12                 	47382424	        25.80 ns/op	      24 B/op	       1 allocs/op
+BenchmarkDListSearch-12                  	 2674602	       448.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDListRemoveByValue-12           	 2104917	       570.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDListSaveText-12                	     100	  10139767 ns/op	    6100 B/op	     748 allocs/op
+BenchmarkDListLoadText-12                	   23756	     50195 ns/op	   56725 B/op	    1014 allocs/op
+BenchmarkHashTableChainsInsert-12        	14404758	        76.20 ns/op	     103 B/op	       2 allocs/op
+BenchmarkHashTableChainsGet-12           	380196007	         3.101 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHashTableChainsRemove-12        	38748058	        29.70 ns/op	      24 B/op	       1 allocs/op
+BenchmarkHashTableChainsContains-12      	383621708	         3.114 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHashTableChainsSaveText-12      	     230	   5578459 ns/op	   13907 B/op	    1724 allocs/op
+BenchmarkHashTableChainsLoadText-12      	    9370	    108056 ns/op	   84800 B/op	    3008 allocs/op
+BenchmarkHashTableChainsSaveBinary-12    	     100	  10314282 ns/op	    8148 B/op	    2008 allocs/op
+BenchmarkHashTableChainsLoadBinary-12    	     732	   1604647 ns/op	   48660 B/op	    3010 allocs/op
+BenchmarkHashTableOAInsert-12            	34883217	        31.43 ns/op	      92 B/op	       0 allocs/op
+BenchmarkHashTableOAGet-12               	192881443	         6.222 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHashTableOARemove-12            	77100506	        15.15 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHashTableOAContains-12          	193668933	         6.205 ns/op	       0 B/op	       0 allocs/op
+BenchmarkHashTableOASaveText-12          	     217	   5673074 ns/op	   13899 B/op	    1724 allocs/op
+BenchmarkHashTableOALoadText-12          	   14006	     84909 ns/op	   93817 B/op	    2008 allocs/op
+BenchmarkHashTableOASaveBinary-12        	     118	  10412308 ns/op	    8140 B/op	    2008 allocs/op
+BenchmarkHashTableOALoadBinary-12        	     769	   1536872 ns/op	   57676 B/op	    2010 allocs/op
+BenchmarkQueuePush-12                    	260845958	         4.026 ns/op	      42 B/op	       0 allocs/op
+BenchmarkQueuePop-12                     	90169658	        14.95 ns/op	     184 B/op	       0 allocs/op
+BenchmarkQueueSaveText-12                	     100	  10209735 ns/op	    6108 B/op	     749 allocs/op
+BenchmarkQueueLoadText-12                	   52338	     22091 ns/op	   32936 B/op	       9 allocs/op
+BenchmarkQueueSaveBinary-12              	     234	   5085378 ns/op	    4128 B/op	    1005 allocs/op
+BenchmarkQueueLoadBinary-12              	    1556	    767662 ns/op	   12320 B/op	    1006 allocs/op
+BenchmarkSListAddHead-12                 	39630409	        30.60 ns/op	      16 B/op	       1 allocs/op
+BenchmarkSListAddTail-12                 	39943351	        30.76 ns/op	      16 B/op	       1 allocs/op
+BenchmarkSListRemoveHead-12              	1000000000	         1.172 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSListRemoveTail-12              	 2657300	       451.7 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSListSearch-12                  	 2661285	       448.5 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSListSaveText-12                	     100	  10537630 ns/op	    6104 B/op	     748 allocs/op
+BenchmarkSListLoadText-12                	   23575	     49395 ns/op	   48721 B/op	    1014 allocs/op
+BenchmarkSListSaveBinary-12              	     236	   4980160 ns/op	    4124 B/op	    1004 allocs/op
+BenchmarkSListLoadBinary-12              	    1486	    810376 ns/op	   20124 B/op	    2004 allocs/op
+BenchmarkStackPush-12                    	1000000000	         0.2311 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStackPop-12                     	1000000000	         0.4435 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStackPeek-12                    	1000000000	         0.4517 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStackPushPop-12                 	916455244	         1.276 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStackSaveText-12                	     100	  10023319 ns/op	    6104 B/op	     748 allocs/op
+BenchmarkStackLoadText-12                	     357	   3388300 ns/op	   59591 B/op	    1998 allocs/op
+BenchmarkStackSaveBinary-12              	     226	   5010948 ns/op	    4124 B/op	    1004 allocs/op
+BenchmarkStackLoadBinary-12              	    1550	    775388 ns/op	   12316 B/op	    1005 allocs/op
+BenchmarkStackClear-12                   	 1726810	       694.6 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	datastructures	239.336s
+ok  	datastructures	268.808s

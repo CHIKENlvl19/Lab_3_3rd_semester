@@ -1,0 +1,27 @@
+@startuml StackCPP
+class Node {
+  + value: int
+  + next: Node*
+}
+
+class MyStack {
+  - top: Node*
+  - size: int
+  
+  + MyStack()
+  + ~MyStack()
+  + Size(): int
+  + IsEmpty(): bool
+  + Push(value: int): void
+  + Pop(): void
+  + Peek(): int
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+}
+
+MyStack *-- Node
+@enduml

@@ -1,0 +1,23 @@
+@startuml StackGO
+class MyStack {
+  - data: []int
+  - size: int
+  
+  + NewStack(): *MyStack
+  + Size(): int
+  + IsEmpty(): bool
+  + Push(value: int): error
+  + Pop(): error
+  + Peek(): (int, error)
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+}
+
+note right of MyStack::Push
+  MaxStackSize = 1000000
+end note
+@enduml

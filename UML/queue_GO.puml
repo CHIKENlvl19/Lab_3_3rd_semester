@@ -1,0 +1,21 @@
+@startuml QueueGo
+class MyQueue {
+  - data: []int
+  - head: int
+  
+  + NewQueue(initialCapacity: int): *MyQueue
+  + Size(): int
+  + Capacity(): int
+  + IsEmpty(): bool
+  + Push(value: int): void
+  + Pop(): error
+  + Front(): (int, error)
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+  - compact(): void
+}
+@enduml

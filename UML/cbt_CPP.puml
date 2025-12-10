@@ -1,0 +1,30 @@
+@startuml CBT_CPP
+class CBTNode {
+  + value: int
+  + left: CBTNode*
+  + right: CBTNode*
+}
+
+class CompleteBinaryTree {
+  - root: CBTNode*
+  - size: int
+  
+  + CompleteBinaryTree()
+  + ~CompleteBinaryTree()
+  + Size(): int
+  + IsEmpty(): bool
+  + GetRoot(): int
+  + Insert(value: int): void
+  + RemoveLast(): void
+  + Clear(): void
+  + PrintLevelOrder(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+  - findParent(index: int): pair<CBTNode*, bool>
+  - deleteTree(node: CBTNode*): void
+}
+
+CompleteBinaryTree *-- CBTNode
+@enduml

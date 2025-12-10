@@ -1,0 +1,21 @@
+@startuml ArrayGo
+class MyArray {
+  - data: []int
+  - size: int
+  - capacity: int
+  
+  + New(initialCapacity: int): *MyArray
+  + Size(): int
+  + Capacity(): int
+  + Get(index: int): (int, error)
+  + Set(index: int, value: int): error
+  + PushBack(value: int): void
+  + Insert(index: int, value: int): error
+  + Remove(index: int): error
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+}
+@enduml

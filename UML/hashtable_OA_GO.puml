@@ -1,0 +1,41 @@
+@startuml HashTableOA_Go
+class oaCell {
+  + key: int
+  + value: int
+  + state: int
+}
+
+class HashTableOA {
+  - table: []oaCell
+  - size: int
+  - capacity: int
+  - loadFactor: float64
+  - a, b, p: int
+  
+  + NewHashTableOA(initialCapacity: int): *HashTableOA
+  + Size(): int
+  + Capacity(): int
+  + LoadFactor(): float64
+  + Insert(key: int, value: int): void
+  + Get(key: int): (int, error)
+  + Remove(key: int): error
+  + Contains(key: int): bool
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+  - hash(key: int, attempt: int): int
+  - resize(): void
+}
+
+HashTableOA *-- oaCell
+
+note right of oaCell
+  Constants:
+  CellEmpty = 0
+  CellOccupied = 1
+  CellDeleted = 2
+end note
+@enduml

@@ -1,0 +1,24 @@
+@startuml QueueCPP
+class MyQueue {
+  - data: int*
+  - capacity: int
+  - head: int
+  - tail: int
+  - count: int
+  
+  + MyQueue(initialCapacity: int)
+  + ~MyQueue()
+  + Size(): int
+  + Capacity(): int
+  + IsEmpty(): bool
+  + Push(value: int): void
+  + Pop(): void
+  + Front(): int
+  + Print(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+  - resize(): void
+}
+@enduml

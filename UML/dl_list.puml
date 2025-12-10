@@ -1,0 +1,32 @@
+@startuml DL_ListCPP
+class DLNode {
+  + value: int
+  + next: DLNode*
+  + prev: DLNode*
+}
+
+class DoublyLinkedList {
+  - head: DLNode*
+  - tail: DLNode*
+  - size: int
+  
+  + DoublyLinkedList()
+  + ~DoublyLinkedList()
+  + Size(): int
+  + IsEmpty(): bool
+  + AddHead(value: int): void
+  + AddTail(value: int): void
+  + AddAfter(index: int, value: int): void
+  + RemoveByValue(value: int): bool
+  + Search(value: int): int
+  + Clear(): void
+  + Print(): void
+  + PrintBackwards(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+}
+
+DoublyLinkedList *-- DLNode
+@enduml

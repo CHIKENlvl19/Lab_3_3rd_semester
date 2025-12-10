@@ -1,0 +1,42 @@
+@startuml HashTableOA_CPP
+enum CellState {
+  CELL_EMPTY = 0
+  CELL_OCCUPIED = 1
+  CELL_DELETED = 2
+}
+
+class Cell {
+  + key: int
+  + value: int
+  + state: CellState
+}
+
+class HashTableOA {
+  - table: Cell*
+  - size: int
+  - capacity: int
+  - loadFactor: double
+  - a, b, p: int
+  
+  + HashTableOA(initialCapacity: int)
+  + ~HashTableOA()
+  + Size(): int
+  + Capacity(): int
+  + LoadFactor(): double
+  + Insert(key: int, value: int): void
+  + Get(key: int): int
+  + Remove(key: int): void
+  + Contains(key: int): bool
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+  - hash(key: int, attempt: int): int
+  - resize(): void
+}
+
+HashTableOA *-- Cell
+Cell ..> CellState
+@enduml

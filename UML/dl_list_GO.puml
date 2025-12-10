@@ -1,0 +1,31 @@
+@startuml DL_ListGo
+class dlistNode {
+  + value: int
+  + next: *dlistNode
+  + prev: *dlistNode
+}
+
+class DoublyLinkedList {
+  - head: *dlistNode
+  - tail: *dlistNode
+  - size: int
+  
+  + NewDoublyLinkedList(): *DoublyLinkedList
+  + Size(): int
+  + IsEmpty(): bool
+  + AddHead(value: int): void
+  + AddTail(value: int): void
+  + AddAfter(index: int, value: int): error
+  + RemoveByValue(value: int): bool
+  + Search(value: int): int
+  + Clear(): void
+  + Print(): void
+  + PrintBackwards(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+}
+
+DoublyLinkedList *-- dlistNode
+@enduml

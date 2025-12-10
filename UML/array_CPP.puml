@@ -1,0 +1,22 @@
+@startuml ArrayCPP
+class MyArray {
+  - data: int*
+  - size: int
+  - capacity: int
+  
+  + MyArray(initialCapacity: int)
+  + ~MyArray()
+  + Size(): int
+  + Capacity(): int
+  + Get(index: int): int
+  + Set(index: int, value: int): void
+  + PushBack(value: int): void
+  + Insert(index: int, value: int): void
+  + Remove(index: int): void
+  + Print(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+}
+@enduml

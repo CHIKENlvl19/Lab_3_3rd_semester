@@ -1,0 +1,28 @@
+@startuml CBT_Go
+class cbtNode {
+  + value: int
+  + left: *cbtNode
+  + right: *cbtNode
+}
+
+class CompleteBinaryTree {
+  - root: *cbtNode
+  - size: int
+  
+  + NewCompleteBinaryTree(): *CompleteBinaryTree
+  + Size(): int
+  + IsEmpty(): bool
+  + GetRoot(): (int, error)
+  + Insert(value: int): void
+  + RemoveLast(): error
+  + Clear(): void
+  + PrintLevelOrder(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+  - findParent(index: int): (*cbtNode, bool)
+}
+
+CompleteBinaryTree *-- cbtNode
+@enduml

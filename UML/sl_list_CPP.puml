@@ -1,0 +1,30 @@
+@startuml SL_ListCPP
+class SLNode {
+  + value: int
+  + next: SLNode*
+}
+
+class SinglyLinkedList {
+  - head: SLNode*
+  - tail: SLNode*
+  - size: int
+  
+  + SinglyLinkedList()
+  + ~SinglyLinkedList()
+  + Size(): int
+  + IsEmpty(): bool
+  + AddHead(value: int): void
+  + AddTail(value: int): void
+  + RemoveHead(): void
+  + RemoveTail(): void
+  + Search(value: int): int
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): void
+  + LoadText(filename: string): void
+  + SaveBinary(filename: string): void
+  + LoadBinary(filename: string): void
+}
+
+SinglyLinkedList *-- SLNode
+@enduml
