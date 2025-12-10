@@ -4,9 +4,7 @@
 #include <algorithm>
 #include <random>
 
-// ------------------------------
-// Вспомогательная генерация случайных чисел
-// ------------------------------
+// вспомогательная генерация случайных чисел
 static std::vector<int> generate_random_ints(size_t n) {
     std::mt19937 rng(12345);
     std::uniform_int_distribution<int> dist(1, 1'000'000);
@@ -15,9 +13,7 @@ static std::vector<int> generate_random_ints(size_t n) {
     return v;
 }
 
-// ------------------------------
 // READ BENCHMARK
-// ------------------------------
 static void BM_Array_Read(benchmark::State& state) {
     const size_t n = state.range(0);
     auto data = generate_random_ints(n);
@@ -32,9 +28,7 @@ static void BM_Array_Read(benchmark::State& state) {
 
 BENCHMARK(BM_Array_Read)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------
 // WRITE BENCHMARK
-// ------------------------------
 static void BM_Array_Write(benchmark::State& state) {
     const size_t n = state.range(0);
     auto data = generate_random_ints(n);
@@ -50,9 +44,7 @@ static void BM_Array_Write(benchmark::State& state) {
 
 BENCHMARK(BM_Array_Write)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------
 // LINEAR SCAN BENCHMARK
-// ------------------------------
 static void BM_Array_LinearScan(benchmark::State& state) {
     const size_t n = state.range(0);
     auto data = std::vector<int>(n, 1);
@@ -68,9 +60,7 @@ static void BM_Array_LinearScan(benchmark::State& state) {
 
 BENCHMARK(BM_Array_LinearScan)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------
 // BINARY SEARCH BENCHMARK
-// ------------------------------
 static void BM_Array_BinarySearch(benchmark::State& state) {
     const size_t n = state.range(0);
     std::vector<int> data(n);
@@ -87,9 +77,7 @@ static void BM_Array_BinarySearch(benchmark::State& state) {
 
 BENCHMARK(BM_Array_BinarySearch)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------
 // INSERT MIDDLE BENCHMARK
-// ------------------------------
 static void BM_Array_InsertMiddle(benchmark::State& state) {
     const size_t n = state.range(0);
     std::vector<int> base(n, 1);
@@ -105,9 +93,7 @@ static void BM_Array_InsertMiddle(benchmark::State& state) {
 
 BENCHMARK(BM_Array_InsertMiddle)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------
 // ERASE MIDDLE BENCHMARK
-// ------------------------------
 static void BM_Array_EraseMiddle(benchmark::State& state) {
     const size_t n = state.range(0);
     std::vector<int> base(n, 1);

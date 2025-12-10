@@ -192,14 +192,14 @@ class HashTableOA {
 
         delete[] table;
 
-        size_t oldSize;  // ← Сохраняем СТАРЫЙ размер
+        size_t oldSize;
         file >> oldSize >> capacity >> a >> b >> p;
 
         table = new Cell[capacity];
-        size = 0;  // ← Обнуляем, потому что insert() будет его увеличивать
+        size = 0;
         loadFactor = 0.0f;
 
-        for (size_t i = 0; i < oldSize; ++i) {  // ← Используем oldSize
+        for (size_t i = 0; i < oldSize; ++i) {
             Key key;
             Value value;
             file >> key >> value;
@@ -239,7 +239,7 @@ class HashTableOA {
 
         delete[] table;
 
-        size_t oldSize;  // ← Сохраняем СТАРЫЙ размер
+        size_t oldSize;
         file.read(reinterpret_cast<char*>(&oldSize), sizeof(oldSize));
         file.read(reinterpret_cast<char*>(&capacity), sizeof(capacity));
         file.read(reinterpret_cast<char*>(&a), sizeof(a));
@@ -247,10 +247,10 @@ class HashTableOA {
         file.read(reinterpret_cast<char*>(&p), sizeof(p));
 
         table = new Cell[capacity];
-        size = 0;  // ← Обнуляем
+        size = 0;
         loadFactor = 0.0f;
 
-        for (size_t i = 0; i < oldSize; ++i) {  // ← Используем oldSize
+        for (size_t i = 0; i < oldSize; ++i) {
             Key key;
             Value value;
             file.read(reinterpret_cast<char*>(&key), sizeof(Key));

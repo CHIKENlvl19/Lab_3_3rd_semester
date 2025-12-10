@@ -32,10 +32,4 @@ class HashTableOA {
 
 HashTableOA *-- oaCell
 
-note right of oaCell
-  Constants:
-  CellEmpty = 0
-  CellOccupied = 1
-  CellDeleted = 2
-end note
 @enduml

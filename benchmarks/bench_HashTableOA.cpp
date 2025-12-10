@@ -11,9 +11,7 @@ static std::vector<int> generate_random_ints(size_t n) {
     return v;
 }
 
-// ------------------------------
 // INSERT BENCHMARK
-// ------------------------------
 static void BM_HashTable_Insert(benchmark::State& state) {
     const size_t capacity = state.range(0);
     auto data = generate_random_ints(capacity);
@@ -33,9 +31,7 @@ static void BM_HashTable_Insert(benchmark::State& state) {
 
 BENCHMARK(BM_HashTable_Insert)->Arg(1000)->Arg(5000)->Arg(10000)->Arg(50000);
 
-// ------------------------------
 // FIND BENCHMARK
-// ------------------------------
 static void BM_HashTable_Find(benchmark::State& state) {
     const size_t capacity = state.range(0);
 
@@ -57,9 +53,7 @@ static void BM_HashTable_Find(benchmark::State& state) {
 
 BENCHMARK(BM_HashTable_Find)->Arg(1000)->Arg(5000)->Arg(10000)->Arg(50000);
 
-// ------------------------------
 // REMOVE BENCHMARK
-// ------------------------------
 static void BM_HashTable_Remove(benchmark::State& state) {
     const size_t capacity = state.range(0);
     auto data = generate_random_ints(capacity);

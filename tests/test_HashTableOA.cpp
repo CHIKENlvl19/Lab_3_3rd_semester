@@ -3,7 +3,7 @@
 #include <string>
 #include "../include/HashTableOA.hpp"
 
-// ================== BASICS ==================
+// BASICS
 
 TEST(HashTableOATest, InsertAndFindIntString) {
     HashTableOA<int, std::string> ht(10);
@@ -88,22 +88,20 @@ TEST(HashTableOATest, RemoveMissingAfterFullScan) {
         ht.remove(i);
     }
 
-    // теперь таблица вся в deleted-слотах → цикл пройдет полностью
     EXPECT_FALSE(ht.remove(999));  // попадает на строку 127
 }
 
 
-// ================== DELETED CELLS ==================
+// DELETED CELLS
 
 TEST(HashTableOATest, ReuseDeletedSlot) {
     HashTableOA<int, int> ht(5);
 
     ht.insert(1, 10);
-    ht.insert(6, 20);   // collision with 1 → index + 1
+    ht.insert(6, 20);
 
     EXPECT_TRUE(ht.remove(1));
 
-    // теперь 1-я ячейка deleted → новая вставка должна использовать её
     EXPECT_TRUE(ht.insert(11, 30));
 
     EXPECT_TRUE(ht.isPresent(11));
@@ -143,7 +141,7 @@ TEST(HashTableOATest, IsPresentMissingAfterFullScan) {
 }
 
 
-// ================== STRESS AND CLUSTERS ==================
+// STRESS AND CLUSTERS
 
 TEST(HashTableOATest, ManyInsertionsWithCollisions) {
     HashTableOA<int, int> ht(50);
@@ -159,7 +157,7 @@ TEST(HashTableOATest, ManyInsertionsWithCollisions) {
 }
 
 
-// ================== COPY AND ASSIGNMENT ==================
+// COPY AND ASSIGNMENT
 
 TEST(HashTableOATest, CopyConstructor) {
     HashTableOA<int, int> ht1(10);
@@ -196,7 +194,7 @@ TEST(HashTableOATest, AssignmentOperator) {
 }
 
 
-// ================== STRING KEYS ==================
+// STRING KEYS
 
 TEST(HashTableOATest, InsertAndFindStringInt) {
     HashTableOA<std::string, int> ht(20);
@@ -225,7 +223,7 @@ TEST(HashTableOATest, RemoveAndReuse) {
 }
 
 
-// ================== EDGE CASES ==================
+// EDGE CASES
 
 TEST(HashTableOATest, InsertUntilFull) {
     HashTableOA<int, int> ht(5);

@@ -13,9 +13,7 @@ static std::vector<int> generate_random_ints(size_t n) {
     return v;
 }
 
-// ========================================
-// БЕНЧМАРКИ ДЛЯ COMPLETE BINARY TREE (CBT)
-// ========================================
+//COMPLETE BINARY TREE (CBT)
 
 static void BM_CBT_Insert(benchmark::State& state) {
     const size_t n = state.range(0);

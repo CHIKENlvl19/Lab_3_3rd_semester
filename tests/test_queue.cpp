@@ -348,7 +348,7 @@ TEST(QueueTest, CircularBufferWraparound) {
     EXPECT_EQ(q.getSize(), 4);
 }
 
-// ===== ТЕСТЫ С STRING =====
+// ТЕСТЫ С STRING
 
 TEST(QueueTestString, PushAndPop) {
     myQueue<std::string> q;
@@ -397,7 +397,7 @@ TEST(QueueTestString, CapacityIncrease) {
     EXPECT_GE(q.getCapacity(), 3);
 }
 
-// ===== ТЕСТЫ С DOUBLE =====
+// ТЕСТЫ С DOUBLE
 
 TEST(QueueTestDouble, BasicOperations) {
     myQueue<double> q;

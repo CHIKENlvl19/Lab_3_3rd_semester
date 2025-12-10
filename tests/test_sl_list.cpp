@@ -14,7 +14,7 @@ std::string capturePrint(const SinglyLinkedList<int>& lst) {
 }
 
 
-// --- Базовая инициализация ---
+// Базовая инициализация
 
 TEST(SinglyLinkedListTest, InitiallyEmpty) {
     SinglyLinkedList<int> lst;
@@ -23,7 +23,7 @@ TEST(SinglyLinkedListTest, InitiallyEmpty) {
 }
 
 
-// --- pushFront ---
+// pushFront
 
 TEST(SinglyLinkedListTest, PushFrontWorks) {
     SinglyLinkedList<int> lst;
@@ -38,7 +38,7 @@ TEST(SinglyLinkedListTest, PushFrontWorks) {
 }
 
 
-// --- pushBack ---
+// pushBack
 
 TEST(SinglyLinkedListTest, PushBackWorks) {
     SinglyLinkedList<int> lst;
@@ -53,7 +53,7 @@ TEST(SinglyLinkedListTest, PushBackWorks) {
 }
 
 
-// --- popFront ---
+// popFront
 
 TEST(SinglyLinkedListTest, PopFrontWorks) {
     SinglyLinkedList<int> lst;
@@ -74,7 +74,7 @@ TEST(SinglyLinkedListTest, PopFrontThrowsOnEmpty) {
 }
 
 
-// --- popBack ---
+// popBack
 
 TEST(SinglyLinkedListTest, PopBackOnSingleElement) {
     SinglyLinkedList<int> lst;
@@ -113,9 +113,6 @@ TEST(SinglyLinkedListTest, PopBackRemovesLastFromThreeElementList) {
     lst.pushBack(20);
     lst.pushBack(30);
 
-    // tail указывает на узел со значением 30
-    // цикл должен выполниться два раза:
-    // cur = 10 → cur = 20 → (cur->next == tail)
     lst.popBack();
 
     EXPECT_EQ(lst.getSize(), 2);
@@ -128,7 +125,7 @@ TEST(SinglyLinkedListTest, PopBackRemovesLastFromThreeElementList) {
 }
 
 
-// --- copy constructor ---
+// copy constructor
 
 TEST(SinglyLinkedListTest, CopyConstructorCreatesSeparateCopy) {
     SinglyLinkedList<int> lst;
@@ -148,7 +145,7 @@ TEST(SinglyLinkedListTest, CopyConstructorCreatesSeparateCopy) {
 }
 
 
-// --- operator= ---
+// operator=
 
 TEST(SinglyLinkedListTest, AssignmentOperatorWorks) {
     SinglyLinkedList<int> a;
@@ -178,7 +175,7 @@ TEST(SinglyLinkedListTest, AssignmentSelf) {
 }
 
 
-// --- clear ---
+// clear
 
 TEST(SinglyLinkedListTest, ClearWorks) {
     SinglyLinkedList<int> lst;
@@ -198,7 +195,7 @@ TEST(SinglyLinkedListTest, ClearWorks) {
 }
 
 
-// --- empty and getSize ---
+// empty and getSize
 
 TEST(SinglyLinkedListTest, EmptyAndSizeCorrect) {
     SinglyLinkedList<int> lst;
@@ -213,7 +210,7 @@ TEST(SinglyLinkedListTest, EmptyAndSizeCorrect) {
 }
 
 
-// --- front() exceptions ---
+// front() exceptions
 
 TEST(SinglyLinkedListTest, FrontThrowsOnEmpty) {
     SinglyLinkedList<int> lst;

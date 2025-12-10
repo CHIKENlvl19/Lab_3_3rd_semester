@@ -1,8 +1,7 @@
 // Copyright message
 #include <benchmark/benchmark.h>
 #include <vector>
-#include "../include/myStack.hpp"   // путь поправь под свой проект
-
+#include "../include/myStack.hpp"
 
 static void BM_Stack_Push(benchmark::State& state) {
     int N = state.range(0);

@@ -47,7 +47,7 @@ BENCHMARK(BM_DLList_AddTail)->Arg(1000)->Arg(5000)->Arg(10000)->Arg(50000);
 static void BM_DLList_SearchByValue(benchmark::State& state) {
     const size_t n = state.range(0);
     auto data = generate_random_ints(n);
-    
+
     DL_list<int> list;
     for (size_t i = 0; i < n; i++) {
         list.addTail(data[i]);
@@ -89,7 +89,7 @@ BENCHMARK(BM_DLList_RemoveByValue)->Arg(1000)->Arg(5000)->Arg(10000);
 static void BM_DLList_Copy(benchmark::State& state) {
     const size_t n = state.range(0);
     auto data = generate_random_ints(n);
-    
+
     DL_list<int> original;
     for (size_t i = 0; i < n; i++) {
         original.addTail(data[i]);

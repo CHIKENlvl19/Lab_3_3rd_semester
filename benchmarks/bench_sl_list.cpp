@@ -4,9 +4,7 @@
 #include <vector>
 #include <random>
 
-// ------------------------------------------------------
 // Вспомогательная генерация случайных чисел
-// ------------------------------------------------------
 static std::vector<int> generate_random_ints(size_t n) {
     std::mt19937 rng(12345);
     std::uniform_int_distribution<int> dist(1, 1'000'000);
@@ -15,9 +13,7 @@ static std::vector<int> generate_random_ints(size_t n) {
     return v;
 }
 
-// ------------------------------------------------------
 // pushFront
-// ------------------------------------------------------
 static void BM_SLL_PushFront(benchmark::State& state) {
     const size_t n = state.range(0);
     auto values = generate_random_ints(n);
@@ -36,9 +32,7 @@ static void BM_SLL_PushFront(benchmark::State& state) {
 
 BENCHMARK(BM_SLL_PushFront)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------------------------------
 // pushBack
-// ------------------------------------------------------
 static void BM_SLL_PushBack(benchmark::State& state) {
     const size_t n = state.range(0);
     auto values = generate_random_ints(n);
@@ -57,9 +51,7 @@ static void BM_SLL_PushBack(benchmark::State& state) {
 
 BENCHMARK(BM_SLL_PushBack)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------------------------------
 // popFront
-// ------------------------------------------------------
 static void BM_SLL_PopFront(benchmark::State& state) {
     const size_t n = state.range(0);
 
@@ -80,9 +72,7 @@ static void BM_SLL_PopFront(benchmark::State& state) {
 
 BENCHMARK(BM_SLL_PopFront)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------------------------------
 // Full Scan (итерация через popFront + pushBack имитация)
-// ------------------------------------------------------
 static void BM_SLL_LinearScan(benchmark::State& state) {
     const size_t n = state.range(0);
 
@@ -106,9 +96,7 @@ static void BM_SLL_LinearScan(benchmark::State& state) {
 
 BENCHMARK(BM_SLL_LinearScan)->Arg(1 << 10)->Arg(1 << 15)->Arg(1 << 20);
 
-// ------------------------------------------------------
 // Construct benchmark
-// ------------------------------------------------------
 static void BM_SLL_Construct(benchmark::State& state) {
     for (auto _ : state) {
         SinglyLinkedList<int> list;
@@ -118,9 +106,7 @@ static void BM_SLL_Construct(benchmark::State& state) {
 
 BENCHMARK(BM_SLL_Construct);
 
-// ------------------------------------------------------
 // Copy benchmark (копирование большого списка)
-// ------------------------------------------------------
 static void BM_SLL_Copy(benchmark::State& state) {
     const size_t n = state.range(0);
 

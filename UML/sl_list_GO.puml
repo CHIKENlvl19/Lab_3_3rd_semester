@@ -1,0 +1,33 @@
+@startuml SL_List_GO
+class slistNode {
+  + value: int
+  + next: *slistNode
+}
+
+class SinglyLinkedList {
+  - head: *slistNode
+  - tail: *slistNode
+  - size: int
+  
+  + NewSinglyLinkedList(): *SinglyLinkedList
+  + Size(): int
+  + IsEmpty(): bool
+  + AddHead(value: int): void
+  + AddTail(value: int): void
+  + RemoveHead(): error
+  + RemoveTail(): error
+  + Search(value: int): int
+  + Clear(): void
+  + Print(): void
+  + SaveText(filename: string): error
+  + LoadText(filename: string): error
+  + SaveBinary(filename: string): error
+  + LoadBinary(filename: string): error
+}
+
+SinglyLinkedList o--> "head" slistNode
+SinglyLinkedList o--> "tail" slistNode
+slistNode --> "next" slistNode
+
+
+@enduml
